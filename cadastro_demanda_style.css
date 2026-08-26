@@ -1,0 +1,32 @@
+h1 {
+    color: #FCA311;
+    padding-bottom: 0px;
+}
+
+h2 {
+    color: #14213D;
+}
+
+body {
+    background-color: #FFFFFF;
+    color:  #000000;
+    font-family: 'Poppins', sans-serif;
+}
+
+header {
+    background-color: #14213D;
+    color:  #000000;
+}
+
+a {
+    color: #FCA311;
+}
+
+button {
+    background-color: #FCA311;
+    color:#000000;
+}
+
+input {
+    border: 1px solid #E5E5E5;
+}
