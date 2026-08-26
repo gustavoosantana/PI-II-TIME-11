@@ -1,0 +1,87 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #E5E5E5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(
+    152deg, 
+    #001f3f 50%,     /* Azul escuro ocupa a metade superior/esquerda */
+    #e5e5e5 50%      /* Cinza claro ocupa a metade inferior/direita */
+  );
+}
+
+.login-text {
+    color: #14213d;
+    padding-left: 35%;
+}
+
+.login-card {
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 350px;
+    width: 100%;
+    padding: 50px;
+}
+.login-card label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+}
+
+.login-card input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  outline: none;
+}
+
+.login-btn {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #FCA311;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.login-btn:hover {
+    background-color: #f1990aea;
+}
+
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding-right: 35px; 
+}
+
+#toggleSenha {
+  position: absolute;
+  right: 12px;
+  cursor: pointer;
+  color: #666;
+}
+
+#toggleSenha:hover {
+  color: #333;
+}
