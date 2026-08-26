@@ -30,3 +30,24 @@ button {
 input {
     border: 1px solid #E5E5E5;
 }
+
+
+.opcoes {
+    display: flex;
+    flex-direction: column;
+}
+.opcoes div {
+    display: flex;
+    align-items: center;
+    margin: 5px;
+}
+
+.campo {
+    width: 400px;
+    height: 35px;
+    border-radius: 10px;
+}
+
+.campo:focus {
+    border: 1px solid #FCA311;
+}
