@@ -12,94 +12,97 @@
         <h1>Nome do Site</h1>
         <a href="#menu">Menu</a>
     </header>
-    <h1>Cadastrar Demanda</h1>
-
-    <h2>Nome</h2>
-    <input type="text" placeholder="Digite o nome da demanda" class="campo">
-
-    <h2>Descrição</h2>
-    <input type="text" placeholder="Digite a descrição da demanda" class="campo">
-
-    <h2>Projeto Associado</h2>
-    <input type="text" placeholder="Digite o projeto associado" class="campo">
-
-    <div class="opcoes">
-        <h2>Tipo</h2>
-        <div>
-            <input type="radio" name="Tipo">
-            <label>Tarefa</label>
+    <div class="principal">
+        
+        <h1 id="titulo">Cadastrar Demanda</h1>
+    
+        <h2>Nome</h2>
+        <input type="text" placeholder="Digite o nome da demanda" class="campo">
+    
+        <h2>Descrição</h2>
+        <input type="text" placeholder="Digite a descrição da demanda" class="campo">
+    
+        <h2>Projeto Associado</h2>
+        <input type="text" placeholder="Digite o projeto associado" class="campo">
+    
+        <div class="opcoes">
+            <h2>Tipo</h2>
+            <div>
+                <input type="radio" name="Tipo">
+                <label>Tarefa</label>
+            </div>
+        
+            <div>
+                <input type="radio" name="Tipo">
+                <label>Defeito</label>
+            </div>
+        
+            <div>
+                <input type="radio" name="Tipo">
+                <label>Melhoria</label>
+            </div>
+        
+            <div>
+                <input type="radio" name="Tipo">
+                <label>Documentação</label>
+            </div>
         </div>
     
-        <div>
-            <input type="radio" name="Tipo">
-            <label>Defeito</label>
+        <div class="opcoes">
+            <h2>Prioridade</h2>
+    
+            <div>
+                <input type="radio" name="Prioridade">
+                <label for="ads">Crítica</label>
+            </div>
+        
+            <div>
+                <input type="radio" name="Prioridade">
+                <label for="engenharia">Alta</label>
+            </div>
+        
+            <div>
+                <input type="radio" name="Prioridade">
+                <label for="ciencia">Média</label>
+            </div>
+            <div>
+                <input type="radio" name="Prioridade">
+                <label for="ads">Baixa</label>
+            </div>
         </div>
     
-        <div>
-            <input type="radio" name="Tipo">
-            <label>Melhoria</label>
+        <div class="opcoes">
+            <h2>Status</h2>
+            <div>
+                <input type="radio" name="Prioridade">
+                <label for="ads">Aberta</label>
+            </div>
+        
+            <div>
+                <input type="radio" name="Prioridade">
+                <label for="engenharia">Em andamento</label>
+            </div>
+        
+            <div>
+                <input type="radio" name="Prioridade">
+                <label for="ciencia">Em revisão</label>
+            </div>
+        
+            <div>
+                <input type="radio" name="Prioridade">
+                <label for="ads">Concluída</label>
+            </div>
+        
+            <div>
+                <input type="radio" name="Prioridade">
+                <label for="ads">Cancelada</label>
+            </div>
         </div>
     
-        <div>
-            <input type="radio" name="Tipo">
-            <label>Documentação</label>
-        </div>
+        <h2>Prazo de Finalização</h2>
+        <input type="date">
+    
+        <button>Cadastrar</button>
     </div>
-
-    <div class="opcoes">
-        <h2>Prioridade</h2>
-
-        <div>
-            <input type="radio" name="Prioridade">
-            <label for="ads">Crítica</label>
-        </div>
-    
-        <div>
-            <input type="radio" name="Prioridade">
-            <label for="engenharia">Alta</label>
-        </div>
-    
-        <div>
-            <input type="radio" name="Prioridade">
-            <label for="ciencia">Média</label>
-        </div>
-        <div>
-            <input type="radio" name="Prioridade">
-            <label for="ads">Baixa</label>
-        </div>
-    </div>
-
-    <div class="opcoes">
-        <h2>Status</h2>
-        <div>
-            <input type="radio" name="Prioridade">
-            <label for="ads">Aberta</label>
-        </div>
-    
-        <div>
-            <input type="radio" name="Prioridade">
-            <label for="engenharia">Em andamento</label>
-        </div>
-    
-        <div>
-            <input type="radio" name="Prioridade">
-            <label for="ciencia">Em revisão</label>
-        </div>
-    
-        <div>
-            <input type="radio" name="Prioridade">
-            <label for="ads">Concluída</label>
-        </div>
-    
-        <div>
-            <input type="radio" name="Prioridade">
-            <label for="ads">Cancelada</label>
-        </div>
-    </div>
-
-    <h2>Prazo de Finalização</h2>
-    <input type="date">
-
-    <button>Cadastrar</button>
 </body>
 </html>
