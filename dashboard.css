@@ -1,0 +1,119 @@
+body {
+    margin: 0 0 0 0;
+    background-color: #E5E5E5;
+    color: #000000;
+    font-family: 'Poppins', sans-serif;
+}
+
+
+/* Título principal */
+
+h1 {
+    color: #FCA311;
+    background-color: #14213D;
+    text-align: center;
+    padding: 16px 0 16px 0;
+    margin: 0 0 30px 0;
+}
+
+
+/* Títulos das seções */
+
+h2 {
+    color: #14213D;
+    margin: 25px 0 12px 0;
+}
+
+
+/* Títulos dentro das caixas */
+
+h3 {
+    color: #14213D;
+}
+
+
+/* Tabela */
+
+table {
+    width: 90%;
+    margin: 10px 0 30px 0;
+    background-color: #FFFFFF;
+    border-collapse: collapse;
+}
+
+
+/* Cabeçalho da tabela */
+
+th {
+    background-color: #14213D;
+    color: #FCA311;
+    padding: 14px;
+    text-align: left;
+}
+
+
+/* Dados da tabela */
+
+td {
+    padding: 12px;
+    border: 1px solid #E5E5E5;
+}
+
+
+/* Caixa de prioridades */
+
+.prioridade {
+    width: 90%;
+    background-color: #FFFFFF;
+    border: 1px solid #E5E5E5;
+    padding: 20px 20px 20px 20px;
+    margin: 10px 0 30px 0;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+
+/* Caixa de tipos */
+
+.tipo {
+    width: 90%;
+    background-color: #FFFFFF;
+    border: 1px solid #E5E5E5;
+    padding: 20px 20px 20px 20px;
+    margin: 10px 0 30px 0;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+
+/* Demandas críticas */
+
+.criticas {
+    width: 90%;
+    background-color: #FFFFFF;
+    border: 1px solid #FCA311;
+    padding: 20px 20px 20px 20px;
+    margin: 10px 0 15px 0;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+
+/* Demandas próximas do prazo */
+
+.prazos {
+    width: 90%;
+    background-color: #FFFFFF;
+    border: 1px solid #E5E5E5;
+    padding: 20px 20px 20px 20px;
+    margin: 10px 0 30px 0;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+
+/* Listas */
+
+ul {
+    margin: 0 0 0 0;
+}
