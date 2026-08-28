@@ -6,7 +6,7 @@ body {
 }
 
 
-/* Título principal */
+
 
 h1 {
     color: #FCA311;
@@ -17,7 +17,7 @@ h1 {
 }
 
 
-/* Títulos das seções */
+
 
 h2 {
     color: #14213D;
@@ -25,14 +25,12 @@ h2 {
 }
 
 
-/* Títulos dentro das caixas */
 
 h3 {
     color: #14213D;
 }
 
 
-/* Tabela */
 
 table {
     width: 90%;
@@ -42,7 +40,7 @@ table {
 }
 
 
-/* Cabeçalho da tabela */
+
 
 th {
     background-color: #14213D;
@@ -52,7 +50,7 @@ th {
 }
 
 
-/* Dados da tabela */
+
 
 td {
     padding: 12px;
@@ -60,7 +58,7 @@ td {
 }
 
 
-/* Caixa de prioridades */
+
 
 .prioridade {
     width: 90%;
@@ -73,7 +71,7 @@ td {
 }
 
 
-/* Caixa de tipos */
+
 
 .tipo {
     width: 90%;
@@ -86,7 +84,7 @@ td {
 }
 
 
-/* Demandas críticas */
+
 
 .criticas {
     width: 90%;
@@ -99,7 +97,7 @@ td {
 }
 
 
-/* Demandas próximas do prazo */
+
 
 .prazos {
     width: 90%;
@@ -112,7 +110,7 @@ td {
 }
 
 
-/* Listas */
+
 
 ul {
     margin: 0 0 0 0;
