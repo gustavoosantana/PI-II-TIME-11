@@ -1,0 +1,296 @@
+<!--
+  ===========================================================================
+  Autor exclusivo deste arquivo: Gabriel Lopes Londe Rodrigues
+
+-->
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <!-- Permite acentos e caracteres do portugues -->
+    <meta charset="UTF-8" />
+
+    <!-- Faz a pagina se ajustar a largura da tela do celular -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Detalhes da Demanda | Acompanhamento de Demandas</title>
+
+    <link rel="stylesheet" href="detalhes.demanda.style.css" />
+  </head>
+
+  <body>
+    <!-- ==================================================================
+         CABECALHO
+         Barra superior com o nome do sistema, o menu e o usuario.
+         Nesta etapa os links do menu ainda nao levam a outras telas,
+         porque as demais telas sao responsabilidade dos outros integrantes.
+         ================================================================== -->
+    <header class="cabecalho">
+      <div class="cabecalho__interno">
+        <div class="cabecalho__marca">
+          Acompanhamento de <span>Demandas</span>
+        </div>
+
+        <nav class="cabecalho__navegacao" aria-label="Menu principal">
+          <a class="cabecalho__link" href="#">Dashboard</a>
+          <a class="cabecalho__link cabecalho__link--ativo" href="#">Demandas</a>
+        </nav>
+
+        <div class="cabecalho__usuario">
+          <div class="cabecalho__usuario-dados">
+            <div class="cabecalho__usuario-nome">Eduardo Martins Colmati</div>
+            <div class="cabecalho__usuario-perfil">Administrador</div>
+          </div>
+
+          <!-- Circulo com a inicial do nome. aria-hidden esconde do leitor
+               de tela, porque o nome ja aparece escrito ao lado. -->
+          <div class="cabecalho__inicial" aria-hidden="true">E</div>
+        </div>
+      </div>
+    </header>
+
+    <main class="pagina">
+      <!-- ================================================================
+           TOPO DA DEMANDA
+           Titulo e as tres etiquetas de classificacao.
+           ================================================================ -->
+      <a class="voltar" href="#">Voltar para a listagem</a>
+
+      <div class="pagina__topo">
+        <div class="pagina__titulo-area">
+          <h1 class="pagina__titulo">Corrigir erro ao salvar nota do aluno</h1>
+
+          <!--
+            As etiquetas mostram a cor e o texto ao mesmo tempo.
+            Escrever a palavra junto da cor e importante para quem nao
+            distingue cores conseguir entender a informacao.
+          -->
+          <div class="etiquetas">
+            <span class="etiqueta etiqueta--em-andamento">Em andamento</span>
+            <span class="etiqueta etiqueta--critica">Critica</span>
+            <span class="etiqueta etiqueta--tipo">Defeito</span>
+          </div>
+        </div>
+
+        <a class="botao botao--secundario" href="#">Editar demanda</a>
+      </div>
+
+      <!-- ================================================================
+           CORPO DA TELA
+           Duas colunas: a principal, com descricao, acoes e comentarios,
+           e a lateral, com a ficha de informacoes e o historico.
+           Em telas menores as duas colunas viram uma so.
+           ================================================================ -->
+      <div class="colunas">
+        <!-- ------------------------- COLUNA PRINCIPAL ------------------ -->
+        <div>
+          <!-- Descricao -->
+          <section class="card">
+            <h2 class="card__titulo">Descricao</h2>
+
+            <!-- Cada paragrafo em sua propria tag p. O espacamento entre
+                 eles e dado pelo CSS, e nao por linhas em branco. -->
+            <p class="descricao">
+              Ao lancar uma nota utilizando virgula como separador decimal, por
+              exemplo 7,5, o sistema apresenta uma mensagem de erro e nao grava
+              o registro. Usando ponto, como 7.5, a nota e salva normalmente.
+            </p>
+            <p class="descricao">
+              O problema foi identificado no lancamento de notas do primeiro
+              bimestre e afeta todos os professores.
+            </p>
+          </section>
+
+          <!-- Acoes de andamento -->
+          <section class="card secao">
+            <h2 class="card__titulo">Atualizar andamento</h2>
+            <p class="texto-apoio">
+              Status atual: Em andamento. Escolha o proximo passo.
+            </p>
+
+            <!--
+              Os botoes abaixo sao visuais nesta etapa. O funcionamento
+              depende do backend, que sera desenvolvido nas proximas etapas
+              do projeto.
+
+              Repare que nao existe botao "Concluir". Pelo fluxo definido no
+              Documento de Visao, uma demanda em andamento precisa passar
+              pelo status Em revisao antes de ser concluida.
+            -->
+            <div class="acoes">
+              <a class="botao botao--principal" href="#">Mover para Em revisao</a>
+              <a class="botao botao--perigo" href="#">Cancelar demanda</a>
+            </div>
+          </section>
+
+          <!-- Comentarios -->
+          <section class="card secao">
+            <h2 class="card__titulo">
+              Comentarios <span class="contador">(3)</span>
+            </h2>
+
+            <!-- Campo para escrever um novo comentario -->
+            <div class="campo">
+              <label class="campo__rotulo" for="comentario">
+                Escrever um comentario
+              </label>
+              <textarea
+                class="campo__area"
+                id="comentario"
+                placeholder="Registre uma duvida, uma observacao ou uma atualizacao sobre o andamento"
+              ></textarea>
+            </div>
+
+            <a class="botao botao--principal" href="#">Enviar comentario</a>
+
+            <!-- Comentarios ja registrados -->
+            <div class="lista-comentarios">
+              <article class="comentario">
+                <div class="comentario__inicial" aria-hidden="true">J</div>
+                <div class="comentario__conteudo">
+                  <div class="comentario__topo">
+                    <span class="comentario__autor">Jose Gabriel Bedani</span>
+                    <span class="comentario__data">18/08/2026 as 09:14</span>
+                  </div>
+                  <p class="comentario__texto">
+                    O erro acontece porque o campo espera ponto no lugar da
+                    virgula. Precisamos aceitar os dois formatos.
+                  </p>
+                </div>
+              </article>
+
+              <article class="comentario">
+                <div class="comentario__inicial" aria-hidden="true">G</div>
+                <div class="comentario__conteudo">
+                  <div class="comentario__topo">
+                    <span class="comentario__autor">Gustavo de Oliveira de Santana</span>
+                    <span class="comentario__data">18/08/2026 as 14:02</span>
+                  </div>
+                  <p class="comentario__texto">
+                    Consegui reproduzir aqui no meu ambiente. Vou comecar a
+                    correcao hoje.
+                  </p>
+                </div>
+              </article>
+
+              <article class="comentario">
+                <div class="comentario__inicial" aria-hidden="true">G</div>
+                <div class="comentario__conteudo">
+                  <div class="comentario__topo">
+                    <span class="comentario__autor">Gabriel Lopes Londe Rodrigues</span>
+                    <span class="comentario__data">19/08/2026 as 10:37</span>
+                  </div>
+                  <p class="comentario__texto">
+                    Vale conferir tambem a tela de lancamento de faltas, que usa
+                    o mesmo componente de campo numerico.
+                  </p>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+
+        <!-- -------------------------- COLUNA LATERAL ------------------- -->
+        <aside>
+          <!--
+            Ficha com os dados da demanda.
+            Usamos dl, dt e dd, que sao as marcacoes proprias do HTML para
+            pares de "nome do dado" e "valor do dado".
+          -->
+          <section class="card">
+            <h2 class="card__titulo">Informacoes</h2>
+
+            <dl class="ficha">
+              <div class="ficha__item">
+                <dt class="ficha__rotulo">Numero</dt>
+                <dd class="ficha__valor">#1</dd>
+              </div>
+
+              <div class="ficha__item">
+                <dt class="ficha__rotulo">Projeto</dt>
+                <dd class="ficha__valor">Portal do Aluno</dd>
+              </div>
+
+              <div class="ficha__item">
+                <dt class="ficha__rotulo">Responsavel</dt>
+                <dd class="ficha__valor">Gustavo de Oliveira de Santana</dd>
+              </div>
+
+              <div class="ficha__item">
+                <dt class="ficha__rotulo">Cadastrada por</dt>
+                <dd class="ficha__valor">Eduardo Martins Colmati</dd>
+              </div>
+
+              <div class="ficha__item">
+                <dt class="ficha__rotulo">Data de criacao</dt>
+                <dd class="ficha__valor">17/08/2026 as 16:45</dd>
+              </div>
+
+              <div class="ficha__item">
+                <dt class="ficha__rotulo">Ultima atualizacao</dt>
+                <dd class="ficha__valor">19/08/2026 as 10:37</dd>
+              </div>
+
+              <div class="ficha__item">
+                <dt class="ficha__rotulo">Prazo de finalizacao</dt>
+                <!-- A classe de atencao deixa o prazo em vermelho quando
+                     ele esta proximo ou ja passou. -->
+                <dd class="ficha__valor ficha__valor--atencao">
+                  10/09/2026 (faltam 5 dias)
+                </dd>
+              </div>
+            </dl>
+          </section>
+
+          <!--
+            Historico de alteracoes.
+            Apresentado como linha do tempo: uma barra vertical a esquerda
+            e um ponto marcando cada alteracao. A alteracao mais recente
+            aparece no topo.
+          -->
+          <section class="card secao">
+            <h2 class="card__titulo">Historico de alteracoes</h2>
+
+            <ul class="historico">
+              <li class="historico__item">
+                <div>
+                  Status alterado de <span class="historico__valor">Aberta</span>
+                  para <span class="historico__valor">Em andamento</span>
+                </div>
+                <div class="historico__rodape">
+                  Gustavo de Oliveira de Santana &middot; 18/08/2026 as 13:58
+                </div>
+              </li>
+
+              <li class="historico__item">
+                <div>
+                  Responsavel definido como
+                  <span class="historico__valor">Gustavo de Oliveira de Santana</span>
+                </div>
+                <div class="historico__rodape">
+                  Jose Gabriel Bedani &middot; 18/08/2026 as 09:20
+                </div>
+              </li>
+
+              <li class="historico__item">
+                <div>
+                  Prioridade alterada de <span class="historico__valor">Alta</span>
+                  para <span class="historico__valor">Critica</span>
+                </div>
+                <div class="historico__rodape">
+                  Jose Gabriel Bedani &middot; 18/08/2026 as 09:18
+                </div>
+              </li>
+
+              <li class="historico__item">
+                <div>Demanda cadastrada no sistema</div>
+                <div class="historico__rodape">
+                  Eduardo Martins Colmati &middot; 17/08/2026 as 16:45
+                </div>
+              </li>
+            </ul>
+          </section>
+        </aside>
+      </div>
+    </main>
+  </body>
+</html>
