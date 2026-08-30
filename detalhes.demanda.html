@@ -6,10 +6,9 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
   <head>
-    <!-- Permite acentos e caracteres do portugues -->
+    
     <meta charset="UTF-8" />
 
-    <!-- Faz a pagina se ajustar a largura da tela do celular -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Detalhes da Demanda | Acompanhamento de Demandas</title>
@@ -18,12 +17,7 @@
   </head>
 
   <body>
-    <!-- ==================================================================
-         CABECALHO
-         Barra superior com o nome do sistema, o menu e o usuario.
-         Nesta etapa os links do menu ainda nao levam a outras telas,
-         porque as demais telas sao responsabilidade dos outros integrantes.
-         ================================================================== -->
+   
     <header class="cabecalho">
       <div class="cabecalho__interno">
         <div class="cabecalho__marca">
@@ -49,21 +43,14 @@
     </header>
 
     <main class="pagina">
-      <!-- ================================================================
-           TOPO DA DEMANDA
-           Titulo e as tres etiquetas de classificacao.
-           ================================================================ -->
+      
       <a class="voltar" href="#">Voltar para a listagem</a>
 
       <div class="pagina__topo">
         <div class="pagina__titulo-area">
           <h1 class="pagina__titulo">Corrigir erro ao salvar nota do aluno</h1>
 
-          <!--
-            As etiquetas mostram a cor e o texto ao mesmo tempo.
-            Escrever a palavra junto da cor e importante para quem nao
-            distingue cores conseguir entender a informacao.
-          -->
+         
           <div class="etiquetas">
             <span class="etiqueta etiqueta--em-andamento">Em andamento</span>
             <span class="etiqueta etiqueta--critica">Critica</span>
@@ -74,12 +61,7 @@
         <a class="botao botao--secundario" href="#">Editar demanda</a>
       </div>
 
-      <!-- ================================================================
-           CORPO DA TELA
-           Duas colunas: a principal, com descricao, acoes e comentarios,
-           e a lateral, com a ficha de informacoes e o historico.
-           Em telas menores as duas colunas viram uma so.
-           ================================================================ -->
+     
       <div class="colunas">
         <!-- ------------------------- COLUNA PRINCIPAL ------------------ -->
         <div>
@@ -87,8 +69,7 @@
           <section class="card">
             <h2 class="card__titulo">Descricao</h2>
 
-            <!-- Cada paragrafo em sua propria tag p. O espacamento entre
-                 eles e dado pelo CSS, e nao por linhas em branco. -->
+         
             <p class="descricao">
               Ao lancar uma nota utilizando virgula como separador decimal, por
               exemplo 7,5, o sistema apresenta uma mensagem de erro e nao grava
@@ -100,35 +81,28 @@
             </p>
           </section>
 
-          <!-- Acoes de andamento -->
+       
           <section class="card secao">
             <h2 class="card__titulo">Atualizar andamento</h2>
             <p class="texto-apoio">
               Status atual: Em andamento. Escolha o proximo passo.
             </p>
 
-            <!--
-              Os botoes abaixo sao visuais nesta etapa. O funcionamento
-              depende do backend, que sera desenvolvido nas proximas etapas
-              do projeto.
-
-              Repare que nao existe botao "Concluir". Pelo fluxo definido no
-              Documento de Visao, uma demanda em andamento precisa passar
-              pelo status Em revisao antes de ser concluida.
-            -->
+         a.
+        
             <div class="acoes">
               <a class="botao botao--principal" href="#">Mover para Em revisao</a>
               <a class="botao botao--perigo" href="#">Cancelar demanda</a>
             </div>
           </section>
 
-          <!-- Comentarios -->
+          
           <section class="card secao">
             <h2 class="card__titulo">
               Comentarios <span class="contador">(3)</span>
             </h2>
 
-            <!-- Campo para escrever um novo comentario -->
+           
             <div class="campo">
               <label class="campo__rotulo" for="comentario">
                 Escrever um comentario
@@ -191,11 +165,7 @@
 
         <!-- -------------------------- COLUNA LATERAL ------------------- -->
         <aside>
-          <!--
-            Ficha com os dados da demanda.
-            Usamos dl, dt e dd, que sao as marcacoes proprias do HTML para
-            pares de "nome do dado" e "valor do dado".
-          -->
+          
           <section class="card">
             <h2 class="card__titulo">Informacoes</h2>
 
@@ -241,12 +211,7 @@
             </dl>
           </section>
 
-          <!--
-            Historico de alteracoes.
-            Apresentado como linha do tempo: uma barra vertical a esquerda
-            e um ponto marcando cada alteracao. A alteracao mais recente
-            aparece no topo.
-          -->
+        
           <section class="card secao">
             <h2 class="card__titulo">Historico de alteracoes</h2>
 
