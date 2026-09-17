@@ -148,3 +148,18 @@ td a {
     font-weight: bold;
     margin: 0;
 }
+
+.erro {
+    display: none;
+    color: #B3261E;
+    font-size: 13px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.sem_resultado {
+    display: none;
+    color: #14213D;
+    font-style: italic;
+    margin: 0;
+}
