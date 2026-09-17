@@ -17,10 +17,12 @@
 
         <h1 id="titulo">Listagem de Demandas</h1>
 
-        <div class="busca">
-            <input type="text" placeholder="Buscar demanda" class="pesquisa">
-            <button>Buscar</button>
-        </div>
+        <form class="busca" id="formulario_busca" novalidate>
+            <input type="text" id="campoBusca" name="busca" class="pesquisa" placeholder="Buscar demanda" maxlength="60" autocomplete="off" aria-describedby="erroBusca">
+            <button type="submit">Buscar</button>
+        </form>
+
+        <p class="erro" id="erroBusca" role="alert" hidden></p>
 
         <div class="tabela">
             <table>
