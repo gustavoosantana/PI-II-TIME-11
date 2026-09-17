@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="cadastro_demanda_style.css">
+    <script src="cadastro_demanda.js" defer></script>
 </head>
 <body>
 
@@ -17,14 +18,17 @@
         <h1 id="titulo">Cadastrar Demanda</h1>
     
         <h2>Nome</h2>
-        <input type="text" placeholder="Digite o nome da demanda" class="campo">
+        <input type="text" placeholder="Digite o nome da demanda" class="campo campo_nome">
+        <p id="erro_nome">Digite o nome</p>
     
         <h2>Descrição</h2>
-        <input type="text" placeholder="Digite a descrição da demanda" class="campo">
-    
+        <input type="text" placeholder="Digite a descrição da demanda" class="campo campo_desc">
+        <p id="erro_desc">Digite a descrição</p>
+
         <h2>Projeto Associado</h2>
-        <input type="text" placeholder="Digite o projeto associado" class="campo">
-    
+        <input type="text" placeholder="Digite o projeto associado" class="campo campo_assoc">
+        <p id="erro_assoc">Digite o projeto</p>
+
         <div class="opcoes">
             <h2>Tipo</h2>
             <div>
@@ -46,6 +50,7 @@
                 <input type="radio" name="Tipo">
                 <label>Documentação</label>
             </div>
+            <p id="erro_tipos">Escolha uma opção</p>
         </div>
     
         <div class="opcoes">
@@ -69,40 +74,43 @@
                 <input type="radio" name="Prioridade">
                 <label for="ads">Baixa</label>
             </div>
+            <p id="erro_prio">Escolha uma opção</p>
         </div>
     
         <div class="opcoes">
             <h2>Status</h2>
             <div>
-                <input type="radio" name="Prioridade">
+                <input type="radio" name="Status">
                 <label for="ads">Aberta</label>
             </div>
         
             <div>
-                <input type="radio" name="Prioridade">
+                <input type="radio" name="Status">
                 <label for="engenharia">Em andamento</label>
             </div>
         
             <div>
-                <input type="radio" name="Prioridade">
+                <input type="radio" name="Status">
                 <label for="ciencia">Em revisão</label>
             </div>
         
             <div>
-                <input type="radio" name="Prioridade">
+                <input type="radio" name="Status">
                 <label for="ads">Concluída</label>
             </div>
         
             <div>
-                <input type="radio" name="Prioridade">
+                <input type="radio" name="Status">
                 <label for="ads">Cancelada</label>
             </div>
+            <p id="erro_status">Escolha uma opção</p>
         </div>
     
         <h2>Prazo de Finalização</h2>
-        <input type="date">
+        <input type="date" class = "data">
+        <p id="erro_prazo">Selecione uma data</p>
     
-        <button>Cadastrar</button>
+        <button class="botao">Cadastrar</button>
     </div>
 </body>
 </html>
