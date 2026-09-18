@@ -1,0 +1,165 @@
+h1 {
+    color: #FCA311;
+    margin: 0 0 16px;
+}
+
+h2 {
+    color: #14213D;
+    margin: 0 0 12px;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background-color: #E5E5E5;
+    color: #000000;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+header {
+    background-color: #14213D;
+    color: #ffffff;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    padding: 16px 0;
+}
+
+a {
+    color: #FCA311;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+input[type="text"] {
+    border-radius: 10px;
+    padding: 10px 12px;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 400px;
+    height: 35px;
+}
+
+input:focus {
+    outline: none;
+    border: 1px solid #FCA311;
+    box-shadow: 0 0 0 2px rgba(252, 163, 17, 0.15);
+}
+
+.pesquisa {
+    width: 100%;
+    height: 35px;
+    border-radius: 10px;
+    border: 1px solid #14213D;
+}
+
+.pesquisa:focus {
+    border: 1px solid #FCA311;
+    outline: none;
+}
+
+button {
+    margin-top: 10px;
+    padding: 10px 16px;
+    background-color: #FCA311;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+button:hover {
+    background-color: #e39200;
+}
+
+.principal {
+    background-color: #FFFFFF;
+    border: 1px solid #E5E5E5;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: min(1000px, 90vw);
+    padding: 24px;
+    border-radius: 12px;
+    box-sizing: border-box;
+    margin: 30px auto;
+    gap: 10px;
+}
+
+#titulo {
+    margin: -24px -24px 20px;
+    padding: 12px 16px;
+    box-sizing: border-box;
+    background-color: #14213D;
+    color: #FCA311;
+    text-align: center;
+    border-radius: 8px 8px 0 0;
+}
+
+.busca {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tabela {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+th {
+    background-color: #14213D;
+    color: #FCA311;
+    text-align: left;
+    padding: 10px 12px;
+    white-space: nowrap;
+}
+
+td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #E5E5E5;
+}
+
+tbody tr:hover {
+    background-color: #F7F7F7;
+}
+
+td a {
+    margin-right: 10px;
+}
+
+.total {
+    color: #14213D;
+    font-weight: bold;
+    margin: 0;
+}
+
+.erro {
+    display: none;
+    color: #B3261E;
+    font-size: 13px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.sem_resultado {
+    display: none;
+    color: #14213D;
+    font-style: italic;
+    margin: 0;
+}

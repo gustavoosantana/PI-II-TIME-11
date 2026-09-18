@@ -1,3 +1,4 @@
+/* AUTORIA: GUSTAVO */
 * {
   margin: 0;
   padding: 0;
@@ -13,8 +14,8 @@ body {
     min-height: 100vh;
     background: linear-gradient(
     152deg, 
-    #001f3f 50%,     /* Azul escuro ocupa a metade superior/esquerda */
-    #e5e5e5 50%      /* Cinza claro ocupa a metade inferior/direita */
+    #001f3f 50%,     
+    #e5e5e5 50%      
   );
 }
 
@@ -84,4 +85,19 @@ body {
 
 #toggleSenha:hover {
   color: #333;
+}
+
+.error-message {
+    color: #ff4d4d;
+    font-size: 0.85rem;
+    margin-top: -5px;
+    margin-bottom: 10px;
+    display: block;
+    min-height: 18px; 
+}
+
+
+input.error {
+    border: 1px solid #ff4d4d !important;
+    background-color: #fff8f8;
 }

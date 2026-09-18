@@ -1,0 +1,26 @@
+{
+  "name": "pi-ii-time-11",
+  "version": "1.0.0",
+  "description": "Nome Projeto: Sistema De Acompanhamento De Demandas De Desenvolvimento",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gustavoosantana/PI-II-TIME-11.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/gustavoosantana/PI-II-TIME-11/issues"
+  },
+  "homepage": "https://github.com/gustavoosantana/PI-II-TIME-11#readme",
+  "dependencies": {
+    "express": "^5.2.1",
+    "nodemon": "^3.1.14"
+  }
+}

@@ -1,0 +1,28 @@
+<!-- AUTORIA: GUSTAVO -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <title>Login</title>
+    <script src="login.js" defer></script>
+</head>
+<body>
+    <form class="login-card" id="login-form" novalidate>
+            <h2 class="login-text">Login</h2>
+            <label for="email">E-mail</label>
+            <input type="email" id="email" placeholder="email@..." required>
+            <span class="error-message" id="emailError"></span>
+            
+            <label for="senha">Senha</label>
+            <div class="password-wrapper">
+                <input type="password" id="senha" placeholder="senha..." required>
+                <i class="fa-regular fa-eye" id="toggleSenha"></i>
+            </div>
+            <span class="error-message" id="senhaError"></span>
+            <button type="submit" class="login-btn">Entrar</button>
+    </form>
+</body>
+</html>
