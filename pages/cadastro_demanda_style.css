@@ -21,12 +21,54 @@ body {
 
 header {
     background-color: #14213D;
-    color: #ffffff;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
+    color: #FFFFFF;
     padding: 16px 0;
+}
+
+.cabecalho {
+    width: 1500px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.marca {
+    font-weight: bold;
+    font-size: 17px;
+}
+
+.marca span {
+    color:#FCA311;
+}
+nav {
+    display: flex;
+    gap: 8px;
+    margin-right: auto;
+}
+
+nav a {
+    color: #FFFFFF;
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+}
+
+nav a.ativo {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #FCA311;
+}
+
+.usuario {
+    text-align: right;
+    font-size: 13px;
+}
+
+.usuario strong {
+    display: block;
+    font-size: 15px;
 }
 
 a {
