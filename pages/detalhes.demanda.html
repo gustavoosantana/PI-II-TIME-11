@@ -1,261 +1,107 @@
 <!--
-  ===========================================================================
-  Autor exclusivo deste arquivo: Gabriel Lopes Londe Rodrigues
+  Autor do arquivo: Gabriel Lopes Londe Rodrigues
+  Tela de Detalhes da Demanda - PI-II-TIME-11
 
+  As areas desta tela nascem vazias e sao preenchidas pelo arquivo
+  detalhes.demanda.js, com os dados que vem do servidor. Por isso ela
+  precisa ser aberta em http://localhost:3000, com o servidor ligado, e
+  nao com um duplo clique no arquivo.
 -->
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    
-    <meta charset="UTF-8" />
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes da Demanda</title>
+    <link rel="stylesheet" href="detalhes.demanda.style.css">
+</head>
 
-    <title>Detalhes da Demanda | Acompanhamento de Demandas</title>
+<body>
+    <header>
+        <div class="cabecalho">
+            <div class="marca">Acompanhamento de <span>Demandas</span></div>
 
-    <link rel="stylesheet" href="detalhes.demanda.style.css" />
-  </head>
+            <nav>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="listagem.html" class="ativo">Demandas</a>
+            </nav>
 
-  <body>
-   
-    <header class="cabecalho">
-      <div class="cabecalho__interno">
-        <div class="cabecalho__marca">
-          Acompanhamento de <span>Demandas</span>
+            <div class="usuario">
+                <strong>Eduardo Martins Colmati</strong>
+                Administrador
+            </div>
         </div>
-
-        <nav class="cabecalho__navegacao" aria-label="Menu principal">
-          <a class="cabecalho__link" href="#">Dashboard</a>
-          <a class="cabecalho__link cabecalho__link--ativo" href="#">Demandas</a>
-        </nav>
-
-        <div class="cabecalho__usuario">
-          <div class="cabecalho__usuario-dados">
-            <div class="cabecalho__usuario-nome">Eduardo Martins Colmati</div>
-            <div class="cabecalho__usuario-perfil">Administrador</div>
-          </div>
-
-          <!-- Circulo com a inicial do nome. aria-hidden esconde do leitor
-               de tela, porque o nome ja aparece escrito ao lado. -->
-          <div class="cabecalho__inicial" aria-hidden="true">E</div>
-        </div>
-      </div>
     </header>
 
-    <main class="pagina">
-      
-      <a class="voltar" href="#">Voltar para a listagem</a>
+    <main>
+        <!--
+          Botao de voltar para a listagem.
 
-      <div class="pagina__topo">
-        <div class="pagina__titulo-area">
-          <h1 class="pagina__titulo">Corrigir erro ao salvar nota do aluno</h1>
+          E um link comum, sem JavaScript nenhum. Assim ele funciona pelo
+          teclado, permite abrir a listagem em outra aba com o botao do
+          meio do mouse, e continua funcionando mesmo se o JavaScript
+          falhar.
+        -->
+        <a href="listagem.html" class="botao secundario voltar">
+            &larr; Voltar para a listagem
+        </a>
 
-         
-          <div class="etiquetas">
-            <span class="etiqueta etiqueta--em-andamento">Em andamento</span>
-            <span class="etiqueta etiqueta--critica">Critica</span>
-            <span class="etiqueta etiqueta--tipo">Defeito</span>
-          </div>
+        <h1 id="titulo"></h1>
+
+        <div class="etiquetas">
+            <span id="etiqueta_status" class="etiqueta"></span>
+            <span id="etiqueta_prioridade" class="etiqueta"></span>
+            <span id="etiqueta_tipo" class="etiqueta"></span>
         </div>
 
-        <a class="botao botao--secundario" href="#">Editar demanda</a>
-      </div>
+        <div class="colunas">
+            <!-- Coluna do conteudo -->
+            <div>
+                <div class="card">
+                    <h2>Descricao</h2>
+                    <p id="descricao"></p>
+                </div>
 
-     
-      <div class="colunas">
-        <!-- ------------------------- COLUNA PRINCIPAL ------------------ -->
-        <div>
-          <!-- Descricao -->
-          <section class="card">
-            <h2 class="card__titulo">Descricao</h2>
+                <!-- Os botoes que aparecem aqui dependem do status atual.
+                     Quem decide quais existem e o servidor. -->
+                <div class="card" id="secao_acoes">
+                    <h2>Atualizar andamento</h2>
+                    <p class="apoio" id="status_atual"></p>
+                    <div id="botoes_status"></div>
+                </div>
 
-         
-            <p class="descricao">
-              Ao lancar uma nota utilizando virgula como separador decimal, por
-              exemplo 7,5, o sistema apresenta uma mensagem de erro e nao grava
-              o registro. Usando ponto, como 7.5, a nota e salva normalmente.
-            </p>
-            <p class="descricao">
-              O problema foi identificado no lancamento de notas do primeiro
-              bimestre e afeta todos os professores.
-            </p>
-          </section>
+                <div class="card">
+                    <h2>Comentarios <span class="data" id="contador"></span></h2>
 
-       
-          <section class="card secao">
-            <h2 class="card__titulo">Atualizar andamento</h2>
-            <p class="texto-apoio">
-              Status atual: Em andamento. Escolha o proximo passo.
-            </p>
+                    <form id="form_comentario">
+                        <label for="comentario">Escrever um comentario</label>
+                        <textarea id="comentario" placeholder="Registre uma duvida ou uma observacao"></textarea>
+                        <p class="erro" id="erro_comentario"></p>
+                        <button type="submit" class="botao principal">Enviar comentario</button>
+                    </form>
 
-         a.
-        
-            <div class="acoes">
-              <a class="botao botao--principal" href="#">Mover para Em revisao</a>
-              <a class="botao botao--perigo" href="#">Cancelar demanda</a>
-            </div>
-          </section>
-
-          
-          <section class="card secao">
-            <h2 class="card__titulo">
-              Comentarios <span class="contador">(3)</span>
-            </h2>
-
-           
-            <div class="campo">
-              <label class="campo__rotulo" for="comentario">
-                Escrever um comentario
-              </label>
-              <textarea
-                class="campo__area"
-                id="comentario"
-                placeholder="Registre uma duvida, uma observacao ou uma atualizacao sobre o andamento"
-              ></textarea>
+                    <div id="lista_comentarios"></div>
+                </div>
             </div>
 
-            <a class="botao botao--principal" href="#">Enviar comentario</a>
+            <!-- Coluna lateral -->
+            <div>
+                <div class="card">
+                    <h2>Informacoes</h2>
 
-            <!-- Comentarios ja registrados -->
-            <div class="lista-comentarios">
-              <article class="comentario">
-                <div class="comentario__inicial" aria-hidden="true">J</div>
-                <div class="comentario__conteudo">
-                  <div class="comentario__topo">
-                    <span class="comentario__autor">Jose Gabriel Bedani</span>
-                    <span class="comentario__data">18/08/2026 as 09:14</span>
-                  </div>
-                  <p class="comentario__texto">
-                    O erro acontece porque o campo espera ponto no lugar da
-                    virgula. Precisamos aceitar os dois formatos.
-                  </p>
+                    <dl class="ficha" id="ficha"></dl>
                 </div>
-              </article>
 
-              <article class="comentario">
-                <div class="comentario__inicial" aria-hidden="true">G</div>
-                <div class="comentario__conteudo">
-                  <div class="comentario__topo">
-                    <span class="comentario__autor">Gustavo de Oliveira de Santana</span>
-                    <span class="comentario__data">18/08/2026 as 14:02</span>
-                  </div>
-                  <p class="comentario__texto">
-                    Consegui reproduzir aqui no meu ambiente. Vou comecar a
-                    correcao hoje.
-                  </p>
+                <div class="card">
+                    <h2>Historico de alteracoes</h2>
+                    <ul id="lista_historico"></ul>
                 </div>
-              </article>
-
-              <article class="comentario">
-                <div class="comentario__inicial" aria-hidden="true">G</div>
-                <div class="comentario__conteudo">
-                  <div class="comentario__topo">
-                    <span class="comentario__autor">Gabriel Lopes Londe Rodrigues</span>
-                    <span class="comentario__data">19/08/2026 as 10:37</span>
-                  </div>
-                  <p class="comentario__texto">
-                    Vale conferir tambem a tela de lancamento de faltas, que usa
-                    o mesmo componente de campo numerico.
-                  </p>
-                </div>
-              </article>
             </div>
-          </section>
         </div>
-
-        <!-- -------------------------- COLUNA LATERAL ------------------- -->
-        <aside>
-          
-          <section class="card">
-            <h2 class="card__titulo">Informacoes</h2>
-
-            <dl class="ficha">
-              <div class="ficha__item">
-                <dt class="ficha__rotulo">Numero</dt>
-                <dd class="ficha__valor">#1</dd>
-              </div>
-
-              <div class="ficha__item">
-                <dt class="ficha__rotulo">Projeto</dt>
-                <dd class="ficha__valor">Portal do Aluno</dd>
-              </div>
-
-              <div class="ficha__item">
-                <dt class="ficha__rotulo">Responsavel</dt>
-                <dd class="ficha__valor">Gustavo de Oliveira de Santana</dd>
-              </div>
-
-              <div class="ficha__item">
-                <dt class="ficha__rotulo">Cadastrada por</dt>
-                <dd class="ficha__valor">Eduardo Martins Colmati</dd>
-              </div>
-
-              <div class="ficha__item">
-                <dt class="ficha__rotulo">Data de criacao</dt>
-                <dd class="ficha__valor">17/08/2026 as 16:45</dd>
-              </div>
-
-              <div class="ficha__item">
-                <dt class="ficha__rotulo">Ultima atualizacao</dt>
-                <dd class="ficha__valor">19/08/2026 as 10:37</dd>
-              </div>
-
-              <div class="ficha__item">
-                <dt class="ficha__rotulo">Prazo de finalizacao</dt>
-                <!-- A classe de atencao deixa o prazo em vermelho quando
-                     ele esta proximo ou ja passou. -->
-                <dd class="ficha__valor ficha__valor--atencao">
-                  10/09/2026 (faltam 5 dias)
-                </dd>
-              </div>
-            </dl>
-          </section>
-
-        
-          <section class="card secao">
-            <h2 class="card__titulo">Historico de alteracoes</h2>
-
-            <ul class="historico">
-              <li class="historico__item">
-                <div>
-                  Status alterado de <span class="historico__valor">Aberta</span>
-                  para <span class="historico__valor">Em andamento</span>
-                </div>
-                <div class="historico__rodape">
-                  Gustavo de Oliveira de Santana &middot; 18/08/2026 as 13:58
-                </div>
-              </li>
-
-              <li class="historico__item">
-                <div>
-                  Responsavel definido como
-                  <span class="historico__valor">Gustavo de Oliveira de Santana</span>
-                </div>
-                <div class="historico__rodape">
-                  Jose Gabriel Bedani &middot; 18/08/2026 as 09:20
-                </div>
-              </li>
-
-              <li class="historico__item">
-                <div>
-                  Prioridade alterada de <span class="historico__valor">Alta</span>
-                  para <span class="historico__valor">Critica</span>
-                </div>
-                <div class="historico__rodape">
-                  Jose Gabriel Bedani &middot; 18/08/2026 as 09:18
-                </div>
-              </li>
-
-              <li class="historico__item">
-                <div>Demanda cadastrada no sistema</div>
-                <div class="historico__rodape">
-                  Eduardo Martins Colmati &middot; 17/08/2026 as 16:45
-                </div>
-              </li>
-            </ul>
-          </section>
-        </aside>
-      </div>
     </main>
-  </body>
+
+    <script src="detalhes.demanda.js"></script>
+</body>
+
 </html>

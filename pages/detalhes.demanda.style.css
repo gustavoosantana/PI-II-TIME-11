@@ -1,697 +1,296 @@
-/* ===========================================================================
-   Autor exclusivo deste arquivo: Gabriel Lopes Londe Rodrigues
+/* Autor do arquivo: Gabriel Lopes Londe Rodrigues */
+/* Estilos da tela de Detalhes da Demanda */
 
-   --------------------------------------------------------------------------- */
+/* Cores combinadas pelo grupo, guardadas em variaveis.
+   Para mudar a cor da tela inteira, basta alterar aqui. */
 :root {
-  --cor-preto: #000000;
-  --cor-azul: #14213d;
-  --cor-laranja: #fca311;
-  --cor-branco: #ffffff;
-
-  /* Tons derivados do azul, para dar profundidade a interface escura */
-  --fundo-pagina: var(--cor-preto);
-  --fundo-card: #0c1526;
-  --fundo-campo: #0a1020;
-  --borda: #223354;
-  --borda-clara: #2e4270;
-
-  --texto-principal: var(--cor-branco);
-  --texto-secundario: #9fadc4;
-  --texto-apagado: #6b7a92;
-
-  --cor-acao: var(--cor-laranja);
-  --texto-sobre-acao: #1a1200;
-
-  --cor-sucesso: #2fbf71;
-  --cor-erro: #ef4d4d;
-
-  --espaco-1: 4px; 
-  --espaco-2: 8px;
-  --espaco-3: 12px;
-  --espaco-4: 16px;
-  --espaco-5: 24px;
-  --espaco-6: 32px;
-  --espaco-7: 48px;
-
-  --canto-pequeno: 8px;
-  --canto-medio: 12px;
-
-  /* Fonte do proprio sistema operacional: carrega instantaneamente e
-     nao depende de baixar nenhum arquivo externo. */
-  --fonte: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-
-  --texto-pequeno: 0.8125rem;
-  --texto-normal: 0.9375rem;
-  --texto-medio: 1.0625rem;
-  --texto-titulo: 1.75rem;
-
-  --largura-conteudo: 1180px;
+    --azul: #14213D;
+    --laranja: #FCA311;
+    --cinza: #E5E5E5;
+    --branco: #FFFFFF;
+    --borda: #CCCCCC;
+    --texto-claro: #55637D;
+    --verde: #1E8F52;
+    --vermelho: #C62D2D;
 }
 
-/*
-  Reinicio basico.
-  Cada navegador aplica margens e tamanhos proprios. As regras abaixo
-  deixam todos no mesmo ponto de partida.
-
-  O box-sizing faz a largura declarada ja incluir a borda e o espacamento
-  interno. Sem ele, um elemento com width 100% mais padding estoura o
-  espaco disponivel e quebra o layout.
-*/
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+
+    /* Faz a largura ja incluir a borda e o espacamento interno */
+    box-sizing: border-box;
 }
 
 body {
-  font-family: var(--fonte);
-  font-size: var(--texto-normal);
-  line-height: 1.55;
-  color: var(--texto-principal);
-  background-color: var(--fundo-pagina);
-
-  /* Garante que o fundo preto cubra a tela toda, mesmo com pouco conteudo */
-  min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: var(--cinza);
+    color: var(--azul);
+    font-size: 15px;
+    line-height: 1.5;
 }
-
-a {
-  color: var(--cor-acao);
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-/*
-  Contorno visivel ao navegar pelo teclado, com a tecla Tab.
-  Importante para acessibilidade: quem nao usa mouse precisa enxergar
-  onde esta na pagina.
-*/
-:focus-visible {
-  outline: 2px solid var(--cor-acao);
-  outline-offset: 2px;
-}
-
-/* ---------------------------------------------------------------------------
-   2. ELEMENTOS COMUNS A VARIAS TELAS
-   --------------------------------------------------------------------------- */
 
 /* ----- Cabecalho ----- */
+header {
+    background-color: var(--azul);
+    color: var(--branco);
+    padding: 16px 0;
+}
+
 .cabecalho {
-  background-color: var(--fundo-card);
-  border-bottom: 1px solid var(--borda);
-
-  /* position: sticky mantem o cabecalho visivel enquanto a pagina rola */
-  position: sticky;
-  top: 0;
-  z-index: 10;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
 }
 
-.cabecalho__interno {
-  max-width: var(--largura-conteudo);
-
-  /* margin auto nas laterais centraliza o conteudo na tela */
-  margin: 0 auto;
-  padding: var(--espaco-3) var(--espaco-5);
-
-  display: flex;
-  align-items: center;
-  gap: var(--espaco-5);
-  flex-wrap: wrap;
+.marca {
+    font-weight: bold;
+    font-size: 17px;
 }
 
-.cabecalho__marca {
-  font-size: var(--texto-medio);
-  font-weight: 700;
-  white-space: nowrap;
+.marca span {
+    color: var(--laranja);
 }
 
-.cabecalho__marca span {
-  color: var(--cor-acao);
+/* O margin-right auto empurra o usuario para a direita */
+nav {
+    display: flex;
+    gap: 8px;
+    margin-right: auto;
 }
 
-.cabecalho__navegacao {
-  display: flex;
-  gap: var(--espaco-2);
-
-  /* margin-right auto empurra o bloco do usuario para a direita */
-  margin-right: auto;
+nav a {
+    color: var(--branco);
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 6px;
 }
 
-.cabecalho__link {
-  padding: var(--espaco-2) var(--espaco-3);
-  border-radius: var(--canto-pequeno);
-  color: var(--texto-secundario);
-  font-weight: 600;
+nav a.ativo {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: var(--laranja);
 }
 
-.cabecalho__link:hover {
-  background-color: var(--cor-azul);
-  color: var(--texto-principal);
-  text-decoration: none;
+.usuario {
+    text-align: right;
+    font-size: 13px;
 }
 
-/* Marca em qual tela o usuario esta */
-.cabecalho__link--ativo {
-  background-color: var(--cor-azul);
-  color: var(--cor-acao);
-}
-
-.cabecalho__usuario {
-  display: flex;
-  align-items: center;
-  gap: var(--espaco-3);
-}
-
-.cabecalho__usuario-dados {
-  text-align: right;
-  line-height: 1.25;
-}
-
-.cabecalho__usuario-nome {
-  font-weight: 600;
-}
-
-.cabecalho__usuario-perfil {
-  font-size: var(--texto-pequeno);
-  color: var(--texto-secundario);
-}
-
-/* Circulo laranja com a inicial do nome */
-.cabecalho__inicial {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-
-  background-color: var(--cor-acao);
-  color: var(--texto-sobre-acao);
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-weight: 700;
-
-  /* Impede que o circulo seja achatado quando falta espaco */
-  flex-shrink: 0;
+.usuario strong {
+    display: block;
+    font-size: 15px;
 }
 
 /* ----- Estrutura da pagina ----- */
-.pagina {
-  max-width: var(--largura-conteudo);
-  margin: 0 auto;
-  padding: var(--espaco-6) var(--espaco-5) var(--espaco-7);
+main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px 20px;
 }
 
-.pagina__topo {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--espaco-4);
-  flex-wrap: wrap;
-  margin-bottom: var(--espaco-5);
-}
-
-.pagina__titulo-area {
-  /* Impede que um titulo longo empurre o botao para fora da tela */
-  max-width: 720px;
-}
-
-.pagina__titulo {
-  font-size: var(--texto-titulo);
-  font-weight: 700;
-  letter-spacing: -0.3px;
-}
-
-.secao {
-  margin-top: var(--espaco-5);
-}
-
-.texto-apoio {
-  color: var(--texto-secundario);
-  font-size: var(--texto-pequeno);
-  margin-bottom: var(--espaco-3);
-}
-
+/* Botao de voltar para a listagem, acima do titulo */
 .voltar {
-  display: inline-block;
-  font-size: var(--texto-pequeno);
-  font-weight: 600;
-  color: var(--texto-secundario);
-  margin-bottom: var(--espaco-2);
+    display: inline-block;
+    margin-bottom: 12px;
 }
 
-.voltar:hover {
-  color: var(--cor-acao);
-  text-decoration: none;
+h1 {
+    font-size: 26px;
+    margin: 8px 0;
 }
 
-/* ----- Cards ----- */
+/* As duas colunas: conteudo e lateral */
+.colunas {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 20px;
+    margin-top: 16px;
+}
+
 .card {
-  background-color: var(--fundo-card);
-  border: 1px solid var(--borda);
-  border-radius: var(--canto-medio);
-  padding: var(--espaco-5);
+    background-color: var(--branco);
+    border: 1px solid var(--borda);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 16px;
 }
 
-.card__titulo {
-  font-size: var(--texto-medio);
-  font-weight: 700;
-  margin-bottom: var(--espaco-3);
+.card h2 {
+    font-size: 17px;
+    margin-bottom: 12px;
 }
 
-.contador {
-  color: var(--texto-secundario);
-  font-weight: 400;
-  font-size: var(--texto-normal);
+.apoio {
+    color: var(--texto-claro);
+    font-size: 13px;
+    margin-bottom: 12px;
 }
 
-/* ----- Botoes ----- */
-.botao {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 10px var(--espaco-4);
-  border: 1px solid transparent;
-  border-radius: var(--canto-pequeno);
-
-  font-size: var(--texto-normal);
-  font-weight: 600;
-  cursor: pointer;
-
-  /* Suaviza a mudanca de cor ao passar o mouse */
-  transition: background-color 0.15s ease, border-color 0.15s ease;
-}
-
-.botao:hover {
-  text-decoration: none;
-}
-
-/* Botao principal: a acao mais importante da tela */
-.botao--principal {
-  background-color: var(--cor-acao);
-  color: var(--texto-sobre-acao);
-}
-
-.botao--principal:hover {
-  background-color: #d98a0b;
-}
-
-/* Botao secundario: acoes de apoio */
-.botao--secundario {
-  background-color: transparent;
-  border-color: var(--borda-clara);
-  color: var(--texto-principal);
-}
-
-.botao--secundario:hover {
-  background-color: var(--cor-azul);
-}
-
-/* Botao de atencao, usado no cancelamento */
-.botao--perigo {
-  background-color: transparent;
-  border-color: var(--cor-erro);
-  color: var(--cor-erro);
-}
-
-.botao--perigo:hover {
-  background-color: rgba(239, 77, 77, 0.12);
-}
-
-/* ----- Campo de texto ----- */
-.campo {
-  margin-bottom: var(--espaco-4);
-}
-
-.campo__rotulo {
-  display: block;
-  font-weight: 600;
-  margin-bottom: var(--espaco-2);
-}
-
-.campo__area {
-  width: 100%;
-  min-height: 92px;
-  padding: 11px var(--espaco-3);
-
-  background-color: var(--fundo-campo);
-  border: 1px solid var(--borda);
-  border-radius: var(--canto-pequeno);
-
-  color: var(--texto-principal);
-  font-family: var(--fonte);
-  font-size: var(--texto-normal);
-
-  /* Permite esticar apenas na vertical, para nao quebrar o layout */
-  resize: vertical;
-}
-
-.campo__area::placeholder {
-  color: var(--texto-apagado);
-}
-
-.campo__area:focus {
-  border-color: var(--cor-acao);
-  outline: none;
-}
-
-/* ----- Etiquetas de status, prioridade e tipo -----
-
-   Cada etiqueta tem uma bolinha colorida antes do texto.
-   A bolinha e criada com ::before, sem precisar de imagem nem de
-   elemento extra no HTML.
-*/
+/* ----- Etiquetas de status, prioridade e tipo ----- */
 .etiquetas {
-  display: flex;
-  gap: var(--espaco-2);
-  flex-wrap: wrap;
-  margin-top: var(--espaco-3);
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
 }
 
 .etiqueta {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-
-  padding: 3px 10px;
-  border-radius: 999px;
-  border: 1px solid transparent;
-
-  font-size: var(--texto-pequeno);
-  font-weight: 600;
-  white-space: nowrap;
+    border: 1px solid var(--borda);
+    border-radius: 20px;
+    padding: 3px 12px;
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--texto-claro);
 }
 
-.etiqueta::before {
-  content: '';
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
+/* Uma cor para cada situacao. Alem da cor, a palavra tambem aparece
+   escrita, para quem nao distingue cores conseguir entender. */
+.aberta { color: #1F6FEB; }
+.em-andamento { color: #8A5800; }
+.em-revisao { color: #7C3AED; }
+.concluida { color: var(--verde); }
+.cancelada { color: var(--texto-claro); }
+.critica { color: var(--vermelho); }
 
-  /* currentColor usa a mesma cor do texto da etiqueta, entao a bolinha
-     acompanha automaticamente a cor de cada situacao */
-  background-color: currentColor;
+/* ----- Botoes ----- */
+.botao {
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding: 10px 16px;
+    font-size: 15px;
+    font-weight: bold;
+    font-family: inherit;
+    cursor: pointer;
 }
 
-.etiqueta--em-andamento {
-  color: var(--cor-acao);
-  background-color: rgba(252, 163, 17, 0.12);
-  border-color: rgba(252, 163, 17, 0.35);
+.principal {
+    background-color: var(--laranja);
+    color: var(--azul);
 }
 
-.etiqueta--critica {
-  color: var(--cor-erro);
-  background-color: rgba(239, 77, 77, 0.12);
-  border-color: rgba(239, 77, 77, 0.35);
+.perigo {
+    background-color: var(--branco);
+    border-color: var(--vermelho);
+    color: var(--vermelho);
 }
 
-/* O tipo da demanda tem aparencia neutra, sem bolinha */
-.etiqueta--tipo {
-  color: var(--texto-secundario);
-  background-color: transparent;
-  border-color: var(--borda-clara);
+.secundario {
+    background-color: var(--branco);
+    border: 1px solid var(--borda);
+    color: var(--azul);
+    text-decoration: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-weight: bold;
 }
 
-.etiqueta--tipo::before {
-  display: none;
+#botoes_status {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
-/* ---------------------------------------------------------------------------
-   3. EXCLUSIVO DA TELA DE DETALHES
-   --------------------------------------------------------------------------- */
-
-/*
-  Duas colunas: a principal cresce conforme o espaco disponivel e a
-  lateral fica com largura fixa de 340 pixels.
-  O align-items start impede que a coluna menor estique ate a altura
-  da maior.
-*/
-.colunas {
-  display: grid;
-  grid-template-columns: 1fr 340px;
-  gap: var(--espaco-5);
-  align-items: start;
-}
-
-/* ----- Descricao ----- */
-.descricao {
-  line-height: 1.7;
-
-  /* Quebra palavras muito longas, como um endereco de site colado na
-     descricao, em vez de estourar a largura do card */
-  overflow-wrap: anywhere;
-}
-
-/* Espaco entre um paragrafo e o seguinte.
-   O seletor + escolhe apenas os paragrafos que vem depois de outro,
-   entao o primeiro nao ganha espaco extra em cima. */
-.descricao + .descricao {
-  margin-top: var(--espaco-3);
-}
-
-/* ----- Acoes ----- */
-.acoes {
-  display: flex;
-  gap: var(--espaco-3);
-  flex-wrap: wrap;
-}
-
-/* ----- Ficha de informacoes ----- */
-.ficha {
-  display: grid;
-  gap: var(--espaco-3);
-}
-
-.ficha__item {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: var(--espaco-3);
-
-  padding-bottom: var(--espaco-3);
-  border-bottom: 1px solid var(--borda);
-}
-
-/* O ultimo item nao precisa da linha divisoria embaixo */
-.ficha__item:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
-.ficha__rotulo {
-  color: var(--texto-secundario);
-  font-size: var(--texto-pequeno);
-  white-space: nowrap;
-}
-
-.ficha__valor {
-  text-align: right;
-  font-weight: 600;
-  overflow-wrap: anywhere;
-}
-
-/* Destaque para prazo vencido ou proximo do vencimento */
-.ficha__valor--atencao {
-  color: var(--cor-erro);
-}
-
-/* ----- Comentarios ----- */
-.lista-comentarios {
-  margin-top: var(--espaco-5);
-  display: grid;
-  gap: var(--espaco-4);
-}
-
-.comentario {
-  display: flex;
-  gap: var(--espaco-3);
-}
-
-.comentario__inicial {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  flex-shrink: 0;
-
-  background-color: var(--cor-azul);
-  border: 1px solid var(--borda-clara);
-  color: var(--texto-secundario);
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  font-weight: 700;
-  font-size: var(--texto-pequeno);
-}
-
-.comentario__conteudo {
-  flex: 1;
-
-  /* Sem o min-width zero, um texto longo sem espacos empurraria o layout */
-  min-width: 0;
-}
-
-.comentario__topo {
-  display: flex;
-  align-items: baseline;
-  gap: var(--espaco-2);
-  flex-wrap: wrap;
-  margin-bottom: var(--espaco-1);
-}
-
-.comentario__autor {
-  font-weight: 600;
-}
-
-.comentario__data {
-  font-size: var(--texto-pequeno);
-  color: var(--texto-apagado);
-}
-
-.comentario__texto {
-  color: var(--texto-secundario);
-  overflow-wrap: anywhere;
-}
-
-/* ----- Historico de alteracoes -----
-
-   Linha do tempo: uma barra vertical a esquerda e um ponto laranja
-   marcando cada alteracao. Os dois sao desenhados com ::before, sem
-   nenhuma imagem.
-*/
-.historico {
-  /* Remove as bolinhas padrao da lista */
-  list-style: none;
-
-  /* position relative permite posicionar a barra em relacao a lista */
-  position: relative;
-
-  /* Espaco a esquerda para a barra e os pontos */
-  padding-left: var(--espaco-4);
-}
-
-/* A barra vertical continua da linha do tempo */
-.historico::before {
-  content: '';
-  position: absolute;
-  left: 4px;
-  top: 6px;
-  bottom: 6px;
-  width: 1px;
-  background-color: var(--borda);
-}
-
-.historico__item {
-  position: relative;
-  padding-bottom: var(--espaco-4);
-}
-
-.historico__item:last-child {
-  padding-bottom: 0;
-}
-
-/* O ponto de cada alteracao, desenhado sobre a barra vertical */
-.historico__item::before {
-  content: '';
-  position: absolute;
-  left: calc(-1 * var(--espaco-4) + 1px);
-  top: 6px;
-
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background-color: var(--cor-acao);
-}
-
-.historico__valor {
-  font-weight: 600;
-  color: var(--texto-principal);
-}
-
-.historico__rodape {
-  font-size: var(--texto-pequeno);
-  color: var(--texto-apagado);
-  margin-top: 2px;
-}
-
-/* ---------------------------------------------------------------------------
-   RESPONSIVIDADE
-
-   A tela precisa funcionar em computador, tablet e celular.
-   As regras abaixo so valem quando a largura da tela e menor que o
-   valor indicado em cada max-width.
-   --------------------------------------------------------------------------- */
-
-/* Tablets e telas menores: a coluna lateral desce para baixo do conteudo */
-@media (max-width: 1000px) {
-  .colunas {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Celulares */
-@media (max-width: 640px) {
-  .cabecalho__interno {
-    padding: var(--espaco-3) var(--espaco-4);
-    gap: var(--espaco-3);
-  }
-
-  /* A navegacao passa a ocupar uma linha inteira, abaixo da marca */
-  .cabecalho__navegacao {
-    order: 3;
+/* ----- Campo de comentario ----- */
+textarea {
     width: 100%;
-    margin-right: 0;
-  }
+    min-height: 90px;
+    padding: 10px;
+    border: 1px solid var(--borda);
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 15px;
 
-  .cabecalho__link {
-    flex: 1;
-    text-align: center;
-  }
+    /* Permite esticar so na vertical, pra nao quebrar o layout */
+    resize: vertical;
+}
 
-  .cabecalho__usuario {
-    margin-left: auto;
-  }
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
 
-  /* O nome do usuario sai para sobrar espaco; o circulo com a inicial fica */
-  .cabecalho__usuario-dados {
+/* Comeca escondido e aparece quando ha erro */
+.erro {
+    color: var(--vermelho);
+    font-size: 13px;
+    margin: 6px 0;
     display: none;
-  }
+}
 
-  .pagina {
-    padding: var(--espaco-4) var(--espaco-3) var(--espaco-6);
-  }
+/* ----- Lista de comentarios ----- */
+.comentario {
+    border-top: 1px solid var(--borda);
+    padding: 12px 0;
+}
 
-  .pagina__topo {
-    flex-direction: column;
-    align-items: stretch;
-  }
+.comentario p {
+    margin-top: 4px;
+}
 
-  .pagina__titulo {
-    font-size: 1.375rem;
-  }
+.data {
+    color: var(--texto-claro);
+    font-size: 13px;
+    font-weight: normal;
+}
 
-  .card {
-    padding: var(--espaco-4);
-  }
+/* ----- Ficha e historico ----- */
+.ficha div {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--borda);
+}
 
-  /* Os botoes ficam um sobre o outro e ocupam a largura toda,
-     o que facilita o toque com o dedo */
-  .acoes {
-    flex-direction: column;
-  }
+.ficha dd {
+    font-weight: bold;
+    text-align: right;
+}
 
-  /* Na ficha, o rotulo e o valor ficam um sobre o outro */
-  .ficha__item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 2px;
-  }
+.atencao {
+    color: var(--vermelho);
+}
 
-  .ficha__valor {
-    text-align: left;
-  }
+/* Campo que a demanda ainda nao tem preenchido */
+.vazio {
+    color: var(--texto-claro);
+    font-style: italic;
+    font-weight: normal;
+}
+
+#lista_historico {
+    list-style: none;
+}
+
+#lista_historico li {
+    border-top: 1px solid var(--borda);
+    padding: 10px 0;
+    font-size: 14px;
+}
+
+#lista_historico .data {
+    display: block;
+}
+
+/* ----- Celular e tablet -----
+   Abaixo de 900px a coluna lateral desce para baixo do conteudo e os
+   botoes ocupam a largura toda, ficando mais faceis de tocar com o dedo */
+@media (max-width: 900px) {
+    .colunas {
+        grid-template-columns: 1fr;
+    }
+
+    .botao {
+        width: 100%;
+    }
+
+    nav {
+        order: 3;
+        width: 100%;
+    }
 }
