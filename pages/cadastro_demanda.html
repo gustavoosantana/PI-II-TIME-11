@@ -10,9 +10,22 @@
 <body>
 
     <header>
-        <h1>Nome do Site</h1>
-        <a href="#menu">Menu</a>
+        <div class="cabecalho">
+            <div class="marca">Cadastro de <span>Demandas</span></div>
+            <!-- Menu de navegação entre as principais páginas do sistema -->
+            <nav>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="listagem.html">Demandas</a>
+                <a href="cadastro_demanda.html" class="ativo">Cadastro de Demandas</a>
+            </nav>
+
+            <div class="usuario">
+                <strong>Eduardo Martins Colmati</strong>
+                Administrador
+            </div>
+        </div>
     </header>
+    <!-- Área principal contendo o formulário de cadastro da demanda -->
     <div class="principal">
         
         <h1 id="titulo">Cadastrar Demanda</h1>
@@ -109,7 +122,7 @@
         <h2>Prazo de Finalização</h2>
         <input type="date" class = "data">
         <p id="erro_prazo">Selecione uma data</p>
-    
+        <!-- Botão utilizado para iniciar o cadastro e a validação dos dados -->
         <button class="botao">Cadastrar</button>
     </div>
 </body>
