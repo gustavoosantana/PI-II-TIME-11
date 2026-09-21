@@ -5,25 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listagem de Demandas</title>
     <link rel="stylesheet" href="listagem-style.css">
+    <script src="listagem.js" defer></script>
 </head>
 <body>
 
     <header>
         <h1>Nome do Site</h1>
-        <a href="#menu">Menu</a>
+        <a href="dashboard.html">Menu</a>
     </header>
 
     <div class="principal">
 
         <h1 id="titulo">Listagem de Demandas</h1>
 
-        <form class="busca" id="formulario_busca" novalidate>
-            <input type="text" id="campoBusca" name="busca" class="pesquisa" placeholder="Buscar demanda" maxlength="60" autocomplete="off" aria-describedby="erroBusca">
+        <form class="busca" id="form_busca" novalidate>
+            <input 
+                type="text" 
+                id="campoBusca" 
+                name="busca" 
+                class="pesquisa" 
+                placeholder="Buscar demanda"
+                maxlength="60"
+                autocomplete="off"
+            >
+
             <button type="submit">Buscar</button>
         </form>
 
         <p class="erro" id="erroBusca" role="alert" hidden></p>
 
+        <p class="sem_resultado" id="sem_resultado">
+            Nenhuma demanda encontrada.
+        </p>
         <div class="tabela">
             <table>
                 <thead>
@@ -131,6 +144,5 @@
         <p class="total">Total de demandas: 6</p>
 
     </div>
-
 </body>
 </html>

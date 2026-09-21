@@ -3,7 +3,7 @@
 // Elementos usados no código
 const form_busca = document.querySelector("#form_busca");
 const campo_busca = document.querySelector(".pesquisa");
-const erro_busca = document.querySelector("#erro_busca");
+const erro_busca = document.querySelector("#erroBusca");
 const sem_resultado = document.querySelector("#sem_resultado");
 const linhas = document.querySelectorAll("tbody tr");
 const total = document.querySelector(".total");
