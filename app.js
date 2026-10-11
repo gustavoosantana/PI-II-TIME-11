@@ -3,6 +3,9 @@ import express from 'express'
 // Rotas da tela de Detalhes da Demanda - Gabriel Lopes Londe Rodrigues
 import { rotas as rotasDetalhes } from './detalhes.demanda.rotas.js'
 
+// Importa as rotas responsáveis pelo Dashboard
+import { rotasDashboard } from "./dashboard.rotas.js"
+
 
 const app = express()
 
@@ -15,6 +18,9 @@ app.use(express.static('pages'))
 // Liga as rotas da tela de Detalhes da Demanda
 app.use(rotasDetalhes)
 
+// Adiciona as rotas do Dashboard ao servidor
+app.use(rotasDashboard)
+
 app.listen(3000, () => {
     console.log("Servidor aberto!")
 })
@@ -23,3 +29,5 @@ app.listen(3000, () => {
 app.get("/", (req, res) => {
     res.send("Inicio")
 })
+
+
