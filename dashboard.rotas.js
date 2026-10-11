@@ -52,6 +52,17 @@ const demandas = [
 
 rotasDashboard.get("/dashboard", (req, res) => {
 
+    // Se o usuário não informar dias na URL, usamos 7 dias.
+    const dias = req.query.dias === undefined ? 7 : Number(req.query.dias)
+
+    // Teste de erro da rota.
+    // Aceitamos apenas números inteiros entre 1 e 365.
+    if (!Number.isInteger(dias) || dias <= 0 || dias > 365) {
+        return res.status(400).json({
+            erro: "O parâmetro dias deve ser um número inteiro entre 1 e 365."
+        })
+    }
+
     const total = demandas.length
 
     const porStatus = {
@@ -83,14 +94,17 @@ rotasDashboard.get("/dashboard", (req, res) => {
         d.status !== "Cancelada"
     )
 
-    // Nesta versão, usamos a data atual e consideramos próximo do prazo
-    // tudo que vence em até 7 dias.
+    // Consideramos "próximas do prazo" as demandas que vencem
+    // entre hoje e a quantidade de dias informada na URL.
     const hoje = new Date()
-    const limite = new Date()
-    limite.setDate(hoje.getDate() + 7)
+    hoje.setHours(0, 0, 0, 0)
+
+    const limite = new Date(hoje)
+    limite.setDate(limite.getDate() + dias)
 
     const proximasDoPrazo = demandas.filter(d => {
-        const prazo = new Date(d.prazo)
+
+        const prazo = new Date(d.prazo + "T00:00:00")
 
         return prazo >= hoje &&
                prazo <= limite &&
@@ -100,6 +114,8 @@ rotasDashboard.get("/dashboard", (req, res) => {
 
     return res.status(200).json({
         total,
+        criterioProximasDoPrazo:
+            `Demandas que vencem nos próximos ${dias} dias`,
         porStatus,
         porPrioridade,
         porTipo,
