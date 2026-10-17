@@ -1,7 +1,7 @@
-import express from 'express'
-
+import express, {Request, Response} from 'express'
+import loginRotas from './login'
 // Rotas da tela de Detalhes da Demanda - Gabriel Lopes Londe Rodrigues
-import { rotas as rotasDetalhes } from './detalhes.demanda.rotas.js'
+// import { rotas as rotasDetalhes } from '/detalhes.demanda.rotas.js'
 
 
 const app = express()
@@ -13,13 +13,14 @@ app.use(express.json())
 app.use(express.static('pages'))
 
 // Liga as rotas da tela de Detalhes da Demanda
-app.use(rotasDetalhes)
+// app.use(rotasDetalhes)
+
+app.use(loginRotas)
+
+app.get("/", (req: Request, res: Response) => {
+    res.send("Inicio")
+})
 
 app.listen(3000, () => {
     console.log("Servidor aberto!")
-})
-
-
-app.get("/", (req, res) => {
-    res.send("Inicio")
 })
