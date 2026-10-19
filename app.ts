@@ -1,5 +1,6 @@
 import express, {Request, Response} from 'express'
 import loginRotas from './login'
+import { rotas } from './cadastro.rotas'
 // Rotas da tela de Detalhes da Demanda - Gabriel Lopes Londe Rodrigues
 // import { rotas as rotasDetalhes } from '/detalhes.demanda.rotas.js'
 
@@ -17,6 +18,7 @@ app.use(express.static('pages'))
 // app.use(rotasDetalhes)
 
 app.use(loginRotas)
+app.use(rotas)
 
 app.get("/", (req: Request, res: Response) => {
     res.send("Inicio")
