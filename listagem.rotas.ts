@@ -1,7 +1,7 @@
 // Autor do arquivo: Enzo Carleti Teixeira
 
 import { Router, Request, Response } from "express"
-export const rotas = Router()
+const rotasListagem = Router()
 
 // Formato de cada demanda
 interface Demanda {
@@ -42,7 +42,7 @@ const demandas: Demanda[] = [
 // EXEMPLOS: /demandas?status=Aberta&prioridade=Alta
 // /demandas?busca=exemplo
 // /demandas?ordenarPor=prazo&ordem=desc
-rotas.get("/demandas", (req: Request, res: Response) => {
+rotasListagem.get("/demandas", (req: Request, res: Response) => {
 
     // Pega os valores que vieram na URL
     const status = req.query.status as string
@@ -138,3 +138,5 @@ rotas.get("/demandas", (req: Request, res: Response) => {
     // Se nenhuma demanda combinar com os filtros, devolve a lista sem nenhum campo.
     return res.status(200).json({ total: resultado.length, demandas: resultado })
 })
+
+export default rotasListagem
