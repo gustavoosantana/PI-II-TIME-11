@@ -23,7 +23,7 @@ const prioridades = ["Crítica", "Alta", "Média", "Baixa"]
 const listaStatus = ["Aberta", "Em andamento", "Em revisão", "Concluída", "Cancelada"]
 
 // Demandas de teste
-const demandas: Demanda[] = [
+export const demandas: Demanda[] = [
     { id: 1, titulo: "Exemplo 1", descricao: "Descrição do exemplo 1", tipo: "Defeito", prioridade: "Crítica", status: "Aberta", projeto: "Projeto 1", responsavel: "Responsável 1", dataCriacao: "2026-09-01", prazo: "2026-10-20" },
     { id: 2, titulo: "Exemplo 2", descricao: "Descrição do exemplo 2", tipo: "Tarefa", prioridade: "Alta", status: "Em andamento", projeto: "Projeto 1", responsavel: "Responsável 2", dataCriacao: "2026-09-03", prazo: "2026-10-30" },
     { id: 3, titulo: "Exemplo 3", descricao: "Descrição do exemplo 3", tipo: "Documentação", prioridade: "Baixa", status: "Aberta", projeto: "Projeto 2", responsavel: "", dataCriacao: "2026-09-05", prazo: "" },

@@ -4,6 +4,7 @@ import loginRotas from './login'
 // import { rotas as rotasDetalhes } from '/detalhes.demanda.rotas.js'
 
 import rotasListagem from './listagem.rotas'
+import { rotasDashboard } from "./dashboard.rotas";
 
 const app = express()
 
@@ -17,6 +18,7 @@ app.use(express.static('pages'))
 // app.use(rotasDetalhes)
 
 app.use(loginRotas)
+app.use(rotasDashboard)
 
 app.get("/", (req: Request, res: Response) => {
     res.send("Inicio")
