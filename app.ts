@@ -3,6 +3,7 @@ import loginRotas from './login'
 // Rotas da tela de Detalhes da Demanda - Gabriel Lopes Londe Rodrigues
 // import { rotas as rotasDetalhes } from '/detalhes.demanda.rotas.js'
 
+import rotasListagem from './listagem.rotas'
 
 const app = express()
 
