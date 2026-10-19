@@ -5,7 +5,7 @@ app.use(express.json())
 let usuarios: Usuario[] = [
     {
     id: 1,
-    email: "homemdeferrodestruidor@gmail.com",
+    email: "teste1@gmail.com",
     senha: "123",
     perfil: "Administrador"
     },

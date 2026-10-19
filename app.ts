@@ -17,6 +17,7 @@ app.use(express.static('pages'))
 // app.use(rotasDetalhes)
 
 app.use(loginRotas)
+app.use(rotasListagem)
 
 app.get("/", (req: Request, res: Response) => {
     res.send("Inicio")
