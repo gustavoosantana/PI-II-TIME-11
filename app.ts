@@ -5,6 +5,8 @@ import { rotas } from './cadastro.rotas'
 import { rotas as rotasDetalhes } from './detalhes.demanda.rotas'
 
 import rotasListagem from './listagem.rotas'
+// Rota GET /dashboard - José Gabriel Bedani
+import { rotasDashboard } from './dashboard.rotas'
 
 const app = express()
 
@@ -21,6 +23,7 @@ app.use(loginRotas)
 app.use(rotas)
 app.use(rotasListagem)
 app.use(rotasDetalhes)
+app.use(rotasDashboard)
 
 app.get("/", (req: Request, res: Response) => {
     res.send("Inicio")
