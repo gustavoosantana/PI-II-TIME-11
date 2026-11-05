@@ -36,10 +36,10 @@ rotas.post("/demandas", (req: Request, res:Response) => {
         return res.status(400).send("Os campos titulo, descricao, tipo, prioridade e projeto sao obrigatorios") 
     }
 
-    if (tipo != "Tarefa" || "Defeito" || "Melhoria" || "Documentacao") {
+    if (!["Tarefa", "Defeito", "Melhoria", "Documentacao"].includes(tipo)) {
         return res.status(400).send("Valor invalido para tipo")    
     }
-    if(prioridade != "Critica" || "Alta" || "Media" || "Baixa") {
+    if (!["Critica", "Alta", "Media", "Baixa"].includes(prioridade)) {
         return res.status(400).send("Valor invalido para prioridade")   
     }
 

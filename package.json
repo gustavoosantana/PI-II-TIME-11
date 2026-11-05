@@ -20,8 +20,8 @@
   },
   "homepage": "https://github.com/gustavoosantana/PI-II-TIME-11#readme",
   "dependencies": {
-    "express": "^5.2.1",
-    "nodemon": "^3.1.14"
+    "express": "^5.3.0",
+    "nodemon": "^3.1.11"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",

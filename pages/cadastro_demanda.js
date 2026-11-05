@@ -1,3 +1,9 @@
+const { stringify } = require("node:querystring");
+
+const API_BASE_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+    ? ""
+    : "http://localhost:3000";
+
 // Seleciona as mensagens de erro e os campos do formulário
 const erro_nome = document.getElementById("erro_nome");
 const erro_desc = document.querySelector("#erro_desc");
@@ -17,7 +23,7 @@ const campo_data = document.querySelector(".data")
 const botao = document.querySelector(".botao");
 
 // Executa a validação ao clicar no botão de cadastro
-botao.addEventListener("click", (e) => {
+botao.addEventListener("click", async (e) => {
     e.preventDefault()
     // Verifica se os campos de texto obrigatórios foram preenchidos
 
@@ -28,7 +34,7 @@ botao.addEventListener("click", (e) => {
         behavior: "smooth"
         });
     }
-    if (campo_desc.value === "") {
+    else if (campo_desc.value === "") {
         erro_desc.style.display = "flex"
         window.scrollTo({
         top: 0,
@@ -36,7 +42,7 @@ botao.addEventListener("click", (e) => {
         });
     }
 
-    if (campo_assoc.value === "") {
+    else if (campo_assoc.value === "") {
         erro_assoc.style.display = "flex"
         window.scrollTo({
         top: 0,
@@ -44,41 +50,52 @@ botao.addEventListener("click", (e) => {
         });
     }
 
-//     tipo = false
+    else {
+        await formularioDemanda()
+    }
 
-//     campo_tipos.forEach((check) => {
-//         if(check.checked) {
-//             tipo = true
-//         }
-//     })
-
-//     if(!tipo) {
-//         erro_tipos.style.display="flex";
-//     }
-
-//     prio = false
-//     campo_prio.forEach((check) => {
-//          if(check.checked) {
-//             tipo = true
-//         }
-//     })
-
-//     if(!prio) {
-//         erro_prio.style.display="flex";
-//     }
-
-//     statys = false
-//     campo_status.forEach((check) => {
-//          if(check.checked) {
-//             status = true
-//         }
-//     })
-
-//     if(!statys) {
-//         erro_status.style.display="flex";
-//     }
-
-//     if(campo_data.value === "") {
-//         erro_data.style.display = "flex";
-//     }
 })
+
+
+async function listarProjetos() {
+    const URL = `${API_BASE_URL}/projetos`;
+    
+    try {
+        const resposta = await fetch(URL);
+        
+        if (!resposta.ok) {
+            throw new Error(`Erro ao buscar projetos: ${resposta.status}`);
+        }
+        
+        const dados = await resposta.json();
+        return dados;
+    } 
+    catch (erro) {
+        console.error("Falha no fetch de projetos:", erro);
+        return [];
+    }
+}
+
+async function criarDemanda(demanda) {
+    const URL = `${API_BASE_URL}/projetos`;
+    const resposta = await fetch(URL, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(demanda)
+    })
+    return await resposta.json()
+}
+async function formularioDemanda() {
+    const demanda = {
+        titulo: campo_nome,
+        descricao: campo_desc,
+        tipo: campo_tipos,
+        prioridade: campo_prio,
+        data_criacao: "",
+        data_finalizacao: ""
+    };
+
+    await criarDemanda(demanda);
+}
