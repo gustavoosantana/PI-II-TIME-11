@@ -187,3 +187,65 @@ li {
 
 
 
+
+
+/* 
+   FILTROS EXTRAS (dias do prazo)
+    */
+
+.filtro-dashboard select + label {
+    margin-left: 20px;
+}
+
+
+/* 
+   CARDS DE DEMANDAS (críticas e próximas do prazo)
+    */
+
+.criticas,
+.prazos {
+    background-color: #F8F9FA;
+
+    padding: 16px 20px;
+    margin-bottom: 14px;
+
+    border-radius: 8px;
+}
+
+.criticas {
+    border-left: 4px solid #C0392B;
+}
+
+.prazos {
+    border-left: 4px solid #FCA311;
+}
+
+.criticas p,
+.prazos p {
+    margin: 4px 0;
+}
+
+/* Texto que explica o critério usado */
+.criterio {
+    margin-top: 0;
+    color: #555555;
+    font-size: 14px;
+}
+
+
+/* 
+   MENSAGEM DE ERRO DA API
+    */
+
+.erro {
+    background-color: #FDECEA;
+    color: #C0392B;
+
+    padding: 14px 18px;
+    margin-bottom: 20px;
+
+    border: 1px solid #C0392B;
+    border-radius: 8px;
+
+    font-weight: bold;
+}
