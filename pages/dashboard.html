@@ -1,11 +1,7 @@
-
-
-<!--José Gabriel Bedani
-        Dashboard-->
-
-        
 <!DOCTYPE html>
 <html lang="pt-BR">
+
+<!-- Autor: José Gabriel Bedani - Tela: Dashboard -->
 
 <head>
     <meta charset="UTF-8">
@@ -14,12 +10,10 @@
     <title>Dashboard</title>
 
     <link rel="stylesheet" href="dashboard.css">
-    <script src="../dashboard.js" defer></script>
+    <script src="dashboard.js" defer></script>
 </head>
 
 <body>
-
-    
 
     <header>
         <h1>Dashboard</h1>
@@ -27,55 +21,38 @@
 
     <main>
 
-        <!-- Filtro de visualização do dashboard -->
+        <!-- Mensagem de erro vinda da API (fica escondida até acontecer um erro) -->
+        <p id="mensagemErro" class="erro" hidden></p>
+
+        <!-- Filtros do dashboard -->
         <div class="filtro-dashboard">
 
-            <label for="filtroVisualizacao">
-                Visualizar:
-            </label>
-
+            <label for="filtroVisualizacao">Visualizar:</label>
             <select id="filtroVisualizacao">
+                <option value="todos">Todos</option>
+                <option value="resumo">Resumo das demandas</option>
+                <option value="prioridade">Demandas por prioridade</option>
+                <option value="tipo">Demandas por tipo</option>
+                <option value="criticas">Demandas críticas</option>
+                <option value="prazos">Próximas do prazo</option>
+            </select>
 
-                <option value="todos">
-                    Todos
-                </option>
-
-                <option value="resumo">
-                    Resumo das demandas
-                </option>
-
-                <option value="prioridade">
-                    Demandas por prioridade
-                </option>
-
-                <option value="tipo">
-                    Demandas por tipo
-                </option>
-
-                <option value="criticas">
-                    Demandas críticas
-                </option>
-
-                <option value="prazos">
-                    Próximas do prazo
-                </option>
-
+            <label for="diasPrazo">Prazo nos próximos:</label>
+            <select id="diasPrazo">
+                <option value="7">7 dias</option>
+                <option value="15">15 dias</option>
+                <option value="30">30 dias</option>
             </select>
 
         </div>
 
 
         <!-- Resumo das demandas -->
-        <section
-            id="secaoResumo"
-            class="secao-dashboard"
-            data-secao="resumo"
-        >
+        <section id="secaoResumo" class="secao-dashboard" data-secao="resumo">
 
             <h2>Resumo das demandas</h2>
 
             <table>
-
                 <thead>
                     <tr>
                         <th>Status</th>
@@ -83,170 +60,75 @@
                     </tr>
                 </thead>
 
+                <!-- Os números são preenchidos pelo dashboard.js com os dados da API -->
                 <tbody>
-
-                    <tr>
-                        <td>Total</td>
-                        <td>25</td>
-                    </tr>
-
-                    <tr>
-                        <td>Abertas</td>
-                        <td>8</td>
-                    </tr>
-
-                    <tr>
-                        <td>Em andamento</td>
-                        <td>6</td>
-                    </tr>
-
-                    <tr>
-                        <td>Em revisão</td>
-                        <td>4</td>
-                    </tr>
-
-                    <tr>
-                        <td>Concluídas</td>
-                        <td>5</td>
-                    </tr>
-
-                    <tr>
-                        <td>Canceladas</td>
-                        <td>2</td>
-                    </tr>
-
+                    <tr><td>Total</td><td id="total">-</td></tr>
+                    <tr><td>Abertas</td><td id="aberta">-</td></tr>
+                    <tr><td>Em andamento</td><td id="emAndamento">-</td></tr>
+                    <tr><td>Em revisão</td><td id="emRevisao">-</td></tr>
+                    <tr><td>Concluídas</td><td id="concluida">-</td></tr>
+                    <tr><td>Canceladas</td><td id="cancelada">-</td></tr>
                 </tbody>
-
             </table>
 
         </section>
 
 
         <!-- Demandas por prioridade -->
-        <section
-            id="secaoPrioridade"
-            class="secao-dashboard"
-            data-secao="prioridade"
-        >
+        <section id="secaoPrioridade" class="secao-dashboard" data-secao="prioridade">
 
             <h2>Demandas por prioridade</h2>
 
             <div class="prioridade">
-
                 <ul>
-                    <li>Crítica: 3</li>
-                    <li>Alta: 7</li>
-                    <li>Média: 10</li>
-                    <li>Baixa: 5</li>
+                    <li>Crítica: <span id="critica">-</span></li>
+                    <li>Alta: <span id="alta">-</span></li>
+                    <li>Média: <span id="media">-</span></li>
+                    <li>Baixa: <span id="baixa">-</span></li>
                 </ul>
-
             </div>
 
         </section>
 
 
         <!-- Demandas por tipo -->
-        <section
-            id="secaoTipo"
-            class="secao-dashboard"
-            data-secao="tipo"
-        >
+        <section id="secaoTipo" class="secao-dashboard" data-secao="tipo">
 
             <h2>Demandas por tipo</h2>
 
             <div class="tipo">
-
                 <ul>
-                    <li>Tarefa: 10</li>
-                    <li>Defeito: 6</li>
-                    <li>Melhoria: 5</li>
-                    <li>Documentação: 4</li>
+                    <li>Tarefa: <span id="tarefa">-</span></li>
+                    <li>Defeito: <span id="defeito">-</span></li>
+                    <li>Melhoria: <span id="melhoria">-</span></li>
+                    <li>Documentação: <span id="documentacao">-</span></li>
                 </ul>
-
             </div>
 
         </section>
 
 
-        <!-- Demandas críticas -->
-        <section
-            id="secaoCriticas"
-            class="secao-dashboard"
-            data-secao="criticas"
-        >
+        <!-- Demandas críticas em aberto (cards criados pelo dashboard.js) -->
+        <section id="secaoCriticas" class="secao-dashboard" data-secao="criticas">
 
             <h2>Demandas críticas em aberto</h2>
-
-            <div class="criticas">
-
-                <h3>
-                    Erro no sistema de login
-                </h3>
-
-                <p>
-                    Responsável: João Silva
-                </p>
-
-                <p>
-                    Prazo: 20/09/2026
-                </p>
-
-            </div>
-
-
-            <div class="criticas">
-
-                <h3>
-                    Falha no cadastro de usuários
-                </h3>
-
-                <p>
-                    Responsável: Maria Santos
-                </p>
-
-                <p>
-                    Prazo: 22/09/2026
-                </p>
-
-            </div>
+            <p id="criterioEmAberto" class="criterio"></p>
+            <div id="listaCriticas"></div>
 
         </section>
 
 
-        <!-- Demandas próximas do prazo -->
-        <section
-            id="secaoPrazos"
-            class="secao-dashboard"
-            data-secao="prazos"
-        >
+        <!-- Demandas próximas do prazo (cards criados pelo dashboard.js) -->
+        <section id="secaoPrazos" class="secao-dashboard" data-secao="prazos">
 
             <h2>Demandas próximas do prazo</h2>
-
-            <div class="prazos">
-
-                <h3>
-                    Atualizar documentação
-                </h3>
-
-                <p>
-                    Responsável: Pedro Oliveira
-                </p>
-
-                <p>
-                    Prazo: 19/09/2026
-                </p>
-
-            </div>
+            <p id="criterioPrazo" class="criterio"></p>
+            <div id="listaPrazos"></div>
 
         </section>
 
     </main>
 
-
-  
-    
-
 </body>
 
 </html>
-```
