@@ -1,7 +1,8 @@
 // Autor: José Gabriel Bedani
 
 import { Router, Request, Response } from "express"
-import { demandas } from "./listagem.rotas"
+// Dados de teste do próprio dashboard (depois serão trocados pelo banco)
+import { demandas } from "./dashboard.dados"
 
 export const rotasDashboard = Router()
 
