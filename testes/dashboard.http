@@ -1,0 +1,26 @@
+# Autor: José Gabriel Bedani
+# Testes da rota GET /dashboard (suba o servidor com: npm run dev)
+
+### Válida: período padrão (7 dias). Esperado: 200
+GET http://localhost:3000/dashboard
+
+### Válida: 30 dias. Esperado: 200
+GET http://localhost:3000/dashboard?dias=30
+
+### Válida: limite máximo. Esperado: 200
+GET http://localhost:3000/dashboard?dias=365
+
+### Erro: zero. Esperado: 400
+GET http://localhost:3000/dashboard?dias=0
+
+### Erro: texto. Esperado: 400
+GET http://localhost:3000/dashboard?dias=abc
+
+### Erro: decimal. Esperado: 400
+GET http://localhost:3000/dashboard?dias=7.5
+
+### Erro: acima do limite. Esperado: 400
+GET http://localhost:3000/dashboard?dias=366
+
+### Erro: vazio. Esperado: 400
+GET http://localhost:3000/dashboard?dias=
