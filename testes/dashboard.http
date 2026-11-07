@@ -1,5 +1,5 @@
 # Autor: José Gabriel Bedani
-# Testes da rota GET /dashboard (suba o servidor com: npm run dev)
+# Testes da rota GET /dashboard
 
 ### Válida: período padrão (7 dias). Esperado: 200
 GET http://localhost:3000/dashboard
