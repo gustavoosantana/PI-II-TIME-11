@@ -13,7 +13,7 @@ const usuario = "Eduardo Martins Colmati"
 
 // Ordem do ciclo de vida, definida no Documento de Visao. A demanda nao
 // pula etapas: para ser concluida precisa passar por Em revisao.
-const ordem = ["Aberta", "Em andamento", "Em revisao", "Concluida"]
+const ordem = ["Aberta", "Em andamento", "Em revisão", "Concluída"]
 
 // As demandas do sistema. A lista comeca vazia: tudo o que aparecer nas
 // telas vai ter entrado pela rota de cadastro, POST /api/demandas.

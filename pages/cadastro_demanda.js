@@ -1,8 +1,4 @@
-const { stringify } = require("node:querystring");
-
-const API_BASE_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
-    ? ""
-    : "http://localhost:3000";
+const API_BASE_URL = "http://localhost:3000";
 
 // Seleciona as mensagens de erro e os campos do formulário
 const erro_nome = document.getElementById("erro_nome");
@@ -89,10 +85,10 @@ async function criarDemanda(demanda) {
 }
 async function formularioDemanda() {
     const demanda = {
-        titulo: campo_nome,
-        descricao: campo_desc,
-        tipo: campo_tipos,
-        prioridade: campo_prio,
+        titulo: campo_nome.value,
+        descricao: campo_desc.value,
+        tipo: campo_tipos.value,
+        prioridade: campo_prio.value,
         data_criacao: "",
         data_finalizacao: ""
     };

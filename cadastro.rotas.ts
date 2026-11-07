@@ -2,8 +2,8 @@ import express, { Request, Response } from "express";
 import { Router } from "express"
 export const rotas = Router()
 
-type Tipo = "Tarefa" | "Defeito" | "Melhoria" | "Documentacao";
-type Prioridade = "Critica" | "Alta" | "Media" | "Baixa";
+type Tipo = "Tarefa" | "Defeito" | "Melhoria" | "Documentação";
+type Prioridade = "Crítica" | "Alta" | "Média" | "Baixa";
 
 interface Demanda {
     titulo: string,
@@ -29,7 +29,7 @@ let projetos: Projeto[] = [{nome: "projeto1", responsavel: usuarios[0]},{nome: "
     {nome:"projeto3", responsavel: usuarios[2]}];
 
 
-rotas.post("/demandas", (req: Request, res:Response) => {
+rotas.post("/demandas", async (req: Request, res:Response) => {
     const { titulo, descricao, tipo, prioridade, projeto, data_finalizacao} = req.body;
 
     if (!titulo || !descricao || !tipo || !prioridade || !projeto) {
@@ -74,11 +74,47 @@ rotas.post("/demandas", (req: Request, res:Response) => {
         data_criacao: new Date(),
         data_finalizacao: dataConvertida
     };
+    let conn;
+    try {
+        conn = await getConn();
+        const result = await conn.execute("INSERT INTO demandas (titulo, descricao, tipo, prioridade, status, id_projeto, id_responsavel, prazo_finalizacao, data_criacao, data_atualizacao) VALUES (:titulo, :descricao, :tipo, :prioridade, 'Aberta', :id_projeto, :id_responsavel, :prazo_finalizacao, SYSDATE, SYSDATE)",
+             {novaDemanda}, { autoCommit: true });
+        return res.status(200).json(result.rows ?? []);
+    } catch (erro) {
+        console.error(erro);
+        return res.status(500).json({mensagem: "Erro na consulta!"});
+    } finally {
+        if (conn) await conn.close();
+    }
 
-    return res.status(201).json(novaDemanda);
 });
 
 
-rotas.get("/projetos", (req: Request, res: Response) => {
-    return res.status(201).json(projetos)
-})
+rotas.get("/projetos", async (req: Request, res: Response) => {
+    let conn;
+    try {
+        conn = await getConn();
+        const result = await conn.execute('SELECT id AS "id", nome AS "nome", descricao AS "descricao", data_inicio AS "data_inicio", data_fim AS "data_fim", situacao AS "situacao" FROM projetos');
+        return res.status(200).json(result.rows ?? []);
+    } catch (erro) {
+        console.error(erro);
+        return res.status(500).json({mensagem: "Erro na consulta!"});
+    } finally {
+        if (conn) await conn.close();
+    }
+});
+
+
+// let conn;
+// try {
+//     conn = await getConn();
+//     const result = await conn.execute(sql, binds);
+//     return res.status(200).json(result.rows ?? []);
+// } catch (erro) {
+//     console.error(erro);
+//     return res.status(500).json({mensagem: "Erro na consulta!"});
+// } finally {
+//     if (conn) await conn.close();
+// }
+
+"INSERT INTO demandas (titulo, descricao, tipo, prioridade, status, id_projeto, id_responsavel, prazo_finalizacao, data_criacao, data_atualizacao) VALUES (:titulo, :descricao, :tipo, :prioridade, 'Aberta', :id_projeto, :id_responsavel, :prazo_finalizacao, SYSDATE, SYSDATE)"

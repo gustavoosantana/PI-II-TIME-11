@@ -7,6 +7,11 @@ import { rotas as rotasDetalhes } from './detalhes.demanda.rotas'
 import rotasListagem from './listagem.rotas'
 // Rota GET /dashboard - José Gabriel Bedani
 import { rotasDashboard } from './dashboard.rotas'
+import "dotenv/config";
+import { initPool, getConn, closePool } from "./db";
+
+const PORT = Number(process.env.PORT ?? 3000);
+
 
 const app = express()
 
@@ -29,6 +34,30 @@ app.get("/", (req: Request, res: Response) => {
     res.send("Inicio")
 })
 
-app.listen(3000, () => {
-    console.log("Servidor aberto!")
-})
+// app.listen(3000, () => {
+//     console.log("Servidor aberto!")
+// })
+async function encerrarServidor() {
+    try {
+        await closePool();
+        console.log("Pool de conexões encerrado.");
+        process.exit(0);
+    } catch (erro) {
+        console.error("Falha ao encerrar o pool:", erro);
+        process.exit(1);
+    }
+}
+async function iniciarServidor() {
+    try {
+        await initPool();
+        app.listen(PORT, () => {
+        console.log(`Servidor ativo na porta ${PORT}`);
+    });
+    process.on("SIGINT", encerrarServidor);
+    process.on("SIGTERM", encerrarServidor);
+    } catch (erro) {
+        console.error("Falha ao iniciar o servidor:", erro);
+        process.exit(1);
+    }
+}
+

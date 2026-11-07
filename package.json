@@ -20,12 +20,15 @@
   },
   "homepage": "https://github.com/gustavoosantana/PI-II-TIME-11#readme",
   "dependencies": {
+    "dotenv": "^18.0.9",
     "express": "^5.3.0",
-    "nodemon": "^3.1.11"
+    "nodemon": "^3.1.11",
+    "oracledb": "^26.0.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
     "@types/node": "^26.6.4",
+    "@types/oracledb": "^26.0.1",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "tsx": "^4.23.15",
