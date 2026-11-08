@@ -126,6 +126,34 @@ button:hover {
     gap: 10px;
 }
 
+/* Área dos filtros, quebra a linha quando não couber na tela */
+.filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* Nome do filtro em cima do campo */
+.filtros label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    color: #14213D;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+/* Campos dos filtros com a mesma altura */
+.filtros select,
+.filtros input[type="text"] {
+    width: 130px;
+    height: 35px;
+    padding: 0 8px;
+    border: 1px solid #14213D;
+    border-radius: 10px;
+    background-color: #FFFFFF;
+}
+
 /* Para que a tabela fique responsiva */
 .tabela {
     width: 100%;
@@ -169,11 +197,15 @@ td a {
     margin: 0;
 }
 
-/* Mensagem de erro da busca em vermelho. */
+/* Mensagem de erro em vermelho, com borda e alinhada à esquerda. */
 .erro {
     display: none;
+    align-self: flex-start;
+    padding: 10px 16px;
+    border: 2px solid #B3261E;
+    border-radius: 10px;
     color: #B3261E;
-    font-size: 13px;
+    font-size: 18px;
     font-weight: bold;
     margin: 0;
 }
