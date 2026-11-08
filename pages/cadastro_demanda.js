@@ -46,6 +46,15 @@ botao.addEventListener("click", async (e) => {
         });
     }
 
+    // Tipo e prioridade sao obrigatorios na rota de cadastro
+    else if (!document.querySelector('input[name="Tipo"]:checked')) {
+        erro_tipos.style.display = "flex"
+    }
+
+    else if (!document.querySelector('input[name="Prioridade"]:checked')) {
+        erro_prio.style.display = "flex"
+    }
+
     else {
         await formularioDemanda()
     }
@@ -93,17 +102,52 @@ async function criarDemanda(demanda) {
 }
 
 async function formularioDemanda() {
+    // O projeto e digitado pelo nome, mas a rota precisa do id dele
+    const projetos = await listarProjetos();
+    const projeto = projetos.find((p) =>
+        p.nome.trim().toLowerCase() === campo_assoc.value.trim().toLowerCase()
+    );
+
+    if (!projeto) {
+        mostrarErro({ mensagem: "Projeto não encontrado. Projetos cadastrados: " + projetos.map((p) => p.nome).join(", ") });
+        return;
+    }
+
+    const status = document.querySelector('input[name="Status"]:checked');
+
     const demanda = {
-        titulo: campo_nome.value,
-        descricao: campo_desc.value,
-        tipo: campo_tipos.value,
-        prioridade: campo_prio.value,
-        data_criacao: "",
-        data_finalizacao: ""
+        titulo: campo_nome.value.trim(),
+        descricao: campo_desc.value.trim(),
+        tipo: document.querySelector('input[name="Tipo"]:checked').value,
+        prioridade: document.querySelector('input[name="Prioridade"]:checked').value,
+        status: status ? status.value : "Aberta",
+        id_projeto: projeto.id,
+        data_finalizacao: campo_data.value || null
     };
 
-    await criarDemanda(demanda);
+    const resultado = await criarDemanda(demanda);
+
+    // Cadastrou: avisa e abre a listagem, onde a demanda nova ja aparece
+    if (resultado) {
+        alert(resultado.mensagem || "Demanda cadastrada!");
+        window.location.href = "listagem.html";
+    }
 }
+
+// Sugere os projetos do banco enquanto o usuario digita o projeto associado
+async function sugerirProjetos() {
+    const lista = document.createElement("datalist");
+    lista.id = "lista_projetos";
+    (await listarProjetos()).forEach((p) => {
+        const opcao = document.createElement("option");
+        opcao.value = p.nome;
+        lista.appendChild(opcao);
+    });
+    document.body.appendChild(lista);
+    campo_assoc.setAttribute("list", "lista_projetos");
+}
+
+sugerirProjetos();
 
 function mostrarErro(json) {
     alert(json.mensagem || json.erro || "Ocorreu um erro ao processar a solicitação.");

@@ -76,6 +76,9 @@ async function atualizarDemanda() {
         }
 
         alert(resultado.mensagem || "Demanda atualizada!");
+
+        // Volta para os detalhes da demanda, ja com os dados novos
+        window.location.href = "detalhes.demanda.html?id=" + id;
     } catch (erro) {
         mostrarErro({ mensagem: erro.message || "Erro ao atualizar a demanda." });
     }
@@ -100,3 +103,41 @@ botao.addEventListener("click", async (e) => {
         await atualizarDemanda();
     }
 });
+
+// Ao abrir a tela, preenche o formulario com os dados atuais da demanda
+async function carregarDemanda() {
+    const id = new URLSearchParams(window.location.search).get("id");
+    if (!id) {
+        mostrarErro({ mensagem: "Abra a edição pela tela de Detalhes da demanda." });
+        return;
+    }
+
+    try {
+        const resposta = await fetch(`${API_BASE_URL}/api/demanda/${id}`);
+        const dados = await resposta.json();
+        if (!resposta.ok) {
+            mostrarErro(dados);
+            return;
+        }
+
+        const demanda = dados.demanda;
+        campo_nome.value = demanda.titulo;
+        campo_desc.value = demanda.descricao;
+        campo_assoc.value = demanda.projeto;
+        campo_data.value = demanda.prazo || "";
+
+        // Marca a opcao de cada grupo que tem o mesmo valor da demanda
+        const marcar = (grupo, valor) => {
+            document.querySelectorAll(`input[name="${grupo}"]`).forEach((opcao) => {
+                opcao.checked = opcao.value === valor;
+            });
+        };
+        marcar("Tipo", demanda.tipo);
+        marcar("Prioridade", demanda.prioridade);
+        marcar("Status", demanda.status);
+    } catch (erro) {
+        mostrarErro({ mensagem: erro.message || "Erro ao carregar a demanda." });
+    }
+}
+
+carregarDemanda();

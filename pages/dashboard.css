@@ -37,6 +37,24 @@ h1 {
     font-size: 32px;
 }
 
+/* Links para as outras telas, abaixo do título */
+.menu-dashboard {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 10px;
+}
+
+.menu-dashboard a {
+    color: #FFFFFF;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.menu-dashboard a:hover {
+    color: #FCA311;
+}
+
 
 /* 
    CONTEÚDO PRINCIPAL

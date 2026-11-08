@@ -22,6 +22,9 @@ const erro_comentario = document.querySelector("#erro_comentario")
 // Sem numero nenhum, abre a primeira.
 const id = new URLSearchParams(window.location.search).get("id") || "1"
 
+// O botao Editar leva o numero desta demanda para a tela de Edicao
+document.getElementById("link_editar").href = "edicao_demanda.html?id=" + id
+
 // Converte a data de 2026-10-15 para 15/10/2026.
 //
 // O campo de data do formulario entrega sempre no formato com o ano na
@@ -56,9 +59,10 @@ function mostrar(dados) {
     etiqueta_tipo.textContent = demanda.tipo
     etiqueta_tipo.style.display = demanda.tipo ? "inline-flex" : "none"
 
-    // Status. A classe muda a cor da etiqueta.
+    // Status. A classe muda a cor da etiqueta. Os acentos saem do nome
+    // da classe: "Em revisão" vira "em-revisao", como esta no CSS.
     etiqueta_status.textContent = demanda.status
-    etiqueta_status.className = "etiqueta " + demanda.status.toLowerCase().replace(" ", "-")
+    etiqueta_status.className = "etiqueta " + demanda.status.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(" ", "-")
     status_atual.textContent = "Status atual: " + demanda.status + ". Escolha o proximo passo."
 
     // Ficha lateral

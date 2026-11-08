@@ -8,6 +8,9 @@
 -- Cada comando termina com uma linha contendo apenas "/". Assim o mesmo
 -- arquivo roda no SQL Developer, no SQL*Plus e no script banco/rodar.ts.
 --
+-- O servidor Oracle da PUC esta em UTC. Por isso as datas usam a hora de
+-- Brasilia (SYSTIMESTAMP AT TIME ZONE) em vez de SYSDATE.
+--
 -- O arquivo pode ser rodado de novo: ele apaga as tabelas antigas antes
 -- de criar. Os dados de teste sao os mesmos 12 exemplos do dashboard.
 
@@ -37,7 +40,7 @@ CREATE TABLE usuarios (
     email         VARCHAR2(150)  NOT NULL,
     senha         VARCHAR2(100)  NOT NULL,
     perfil        VARCHAR2(30)   NOT NULL,
-    data_criacao  DATE           DEFAULT SYSDATE NOT NULL,
+    data_criacao  DATE           DEFAULT CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE) NOT NULL,
     CONSTRAINT uq_usuarios_email UNIQUE (email),
     CONSTRAINT ck_usuarios_perfil CHECK (perfil IN ('Administrador', 'Lider de Projeto', 'Membro da equipe'))
 )
@@ -70,8 +73,8 @@ CREATE TABLE demandas (
     id_projeto         NUMBER          NOT NULL,
     id_responsavel     NUMBER,
     prazo_finalizacao  DATE,
-    data_criacao       DATE            DEFAULT SYSDATE NOT NULL,
-    data_atualizacao   DATE            DEFAULT SYSDATE NOT NULL,
+    data_criacao       DATE            DEFAULT CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE) NOT NULL,
+    data_atualizacao   DATE            DEFAULT CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE) NOT NULL,
     CONSTRAINT fk_demandas_projeto FOREIGN KEY (id_projeto) REFERENCES projetos (id),
     CONSTRAINT fk_demandas_responsavel FOREIGN KEY (id_responsavel) REFERENCES usuarios (id),
     CONSTRAINT ck_demandas_tipo CHECK (tipo IN ('Tarefa', 'Defeito', 'Melhoria', 'Documentação', 'Documentacao')),
@@ -86,7 +89,7 @@ CREATE TABLE comentarios (
     id_demanda    NUMBER          NOT NULL,
     id_usuario    NUMBER,
     texto         VARCHAR2(2000)  NOT NULL,
-    data_criacao  DATE            DEFAULT SYSDATE NOT NULL,
+    data_criacao  DATE            DEFAULT CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE) NOT NULL,
     CONSTRAINT fk_comentarios_demanda FOREIGN KEY (id_demanda) REFERENCES demandas (id) ON DELETE CASCADE,
     CONSTRAINT fk_comentarios_usuario FOREIGN KEY (id_usuario) REFERENCES usuarios (id)
 )
@@ -99,7 +102,7 @@ CREATE TABLE historico_status (
     id_usuario       NUMBER,
     status_anterior  VARCHAR2(20),
     status_novo      VARCHAR2(20)  NOT NULL,
-    data_alteracao   DATE          DEFAULT SYSDATE NOT NULL,
+    data_alteracao   DATE          DEFAULT CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE) NOT NULL,
     CONSTRAINT fk_historico_demanda FOREIGN KEY (id_demanda) REFERENCES demandas (id) ON DELETE CASCADE,
     CONSTRAINT fk_historico_usuario FOREIGN KEY (id_usuario) REFERENCES usuarios (id)
 )
@@ -172,18 +175,18 @@ END;
 
 -- ---------------------------------------------------------------------
 -- 4. Dados de teste
---    Os mesmos usuarios do login.ts e as mesmas 12 demandas do
---    dashboard.dados.ts, para os numeros das telas baterem.
+--    Os mesmos e-mails e senhas do login.ts, com os nomes dos integrantes,
+--    e as mesmas 12 demandas do dashboard.dados.ts.
 -- ---------------------------------------------------------------------
-INSERT INTO usuarios (nome, email, senha, perfil) VALUES ('Responsável 1', 'teste1@gmail.com', '123', 'Administrador')
+INSERT INTO usuarios (nome, email, senha, perfil) VALUES ('Eduardo Martins Colmati', 'teste1@gmail.com', '123', 'Administrador')
 /
-INSERT INTO usuarios (nome, email, senha, perfil) VALUES ('Responsável 2', 'teste2@gmail.com', '456', 'Lider de Projeto')
+INSERT INTO usuarios (nome, email, senha, perfil) VALUES ('Gustavo de Oliveira de Santana', 'teste2@gmail.com', '456', 'Lider de Projeto')
 /
-INSERT INTO usuarios (nome, email, senha, perfil) VALUES ('Responsável 3', 'teste3@gmail.com', '789', 'Membro da equipe')
+INSERT INTO usuarios (nome, email, senha, perfil) VALUES ('Enzo Carleti Teixeira', 'teste3@gmail.com', '789', 'Membro da equipe')
 /
 
 INSERT INTO projetos (nome, descricao, data_inicio, data_fim, situacao, id_responsavel)
-VALUES ('Projeto 1', 'Projeto de exemplo para os testes', DATE '2026-08-01', DATE '2026-12-15', 'Ativo', 1)
+VALUES ('Projeto 1', 'Sistema de Acompanhamento de Demandas', DATE '2026-08-01', DATE '2026-12-15', 'Ativo', 1)
 /
 INSERT INTO projetos (nome, descricao, data_inicio, data_fim, situacao, id_responsavel)
 VALUES ('Projeto 2', 'Segundo projeto de exemplo', DATE '2026-09-01', NULL, 'Ativo', 2)

@@ -1,196 +1,228 @@
 // Autor do arquivo: Gabriel Lopes Londe Rodrigues
 // Rotas da tela de Detalhes da Demanda
 
-import { Router } from "express"
+import { Router, Request, Response } from "express"
+import { getConn } from "./db"
 
 // Um Router agrupa rotas. Ele fica neste arquivo separado para as minhas
-// rotas nao precisarem ser escritas dentro do app.js, que e da equipe.
+// rotas nao precisarem ser escritas dentro do app.ts, que e da equipe.
 export const rotas = Router()
 
-// Nome de quem esta usando o sistema. Quando a tela de login estiver
-// ligada, este nome passa a vir de la.
-const usuario = "Eduardo Martins Colmati"
+// Usuario que esta usando o sistema (id 1 da tabela usuarios). Quando a
+// tela de login estiver ligada ao banco, este id passa a vir de la.
+const ID_USUARIO = 1
 
 // Ordem do ciclo de vida, definida no Documento de Visao. A demanda nao
-// pula etapas: para ser concluida precisa passar por Em revisao.
+// pula etapas: para ser concluida precisa passar por Em revisão.
 const ordem = ["Aberta", "Em andamento", "Em revisão", "Concluída"]
+const todos = [...ordem, "Cancelada"]
 
-// As demandas do sistema. A lista comeca vazia: tudo o que aparecer nas
-// telas vai ter entrado pela rota de cadastro, POST /api/demandas.
-//
-// Fica em uma variavel porque o projeto ainda nao tem banco de dados, entao
-// ao reiniciar o servidor a lista volta a ficar vazia.
-const demandas = []
-let proximoNumero = 1
-
-// Fuso de Brasilia. Sem isso as datas saem no horario de Londres quando o
-// sistema esta publicado, tres horas adiantadas.
-const FUSO = "America/Sao_Paulo"
-
-// Data e hora de agora, no formato 21/09/2026 as 14:32
-function agora() {
-    const d = new Date()
-    return d.toLocaleDateString("pt-BR", { timeZone: FUSO }) + " as " +
-           d.toLocaleTimeString("pt-BR", { timeZone: FUSO, hour: "2-digit", minute: "2-digit" })
+// Tira os acentos, para comparar "Em revisao" com "Em revisão"
+function semAcento(texto: string) {
+    return String(texto).normalize("NFD").replace(/[̀-ͯ]/g, "")
 }
 
-// Tira os acentos. A tela de cadastro escreve "Em revisão" e "Concluída"
-// com acento, e as regras aqui usam sem. Sem isto o status vindo de la
-// seria recusado.
-function semAcento(texto) {
-    return String(texto).normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+// Devolve o status escrito do jeito que fica no banco (com acento),
+// aceitando o nome com ou sem acento. Devolve "" se nao existir.
+function statusOficial(texto: string) {
+    return todos.find((s) => semAcento(s) === semAcento(texto)) ?? ""
 }
 
 // Para quais status a demanda pode ir a partir do status atual
-function proximosStatus(atual) {
+function proximosStatus(atual: string) {
+    const status = statusOficial(atual)
 
     // Demanda encerrada nao muda mais de status
-    if (atual === "Concluida" || atual === "Cancelada") {
+    if (status === "Concluída" || status === "Cancelada" || status === "") {
         return []
     }
 
-    return [ordem[ordem.indexOf(atual) + 1], "Cancelada"]
+    return [ordem[ordem.indexOf(status) + 1], "Cancelada"]
 }
 
-// Procura uma demanda pelo numero
-function procurar(id) {
-    return demandas.find((d) => d.id === Number(id))
-}
+// Busca a demanda completa no banco: dados, comentarios e historico.
+// Devolve null se o numero nao existir.
+async function buscarDemanda(conn: any, id: number) {
+    const dados = await conn.execute(
+        `SELECT d.id AS "id",
+                d.titulo AS "titulo",
+                d.descricao AS "descricao",
+                d.tipo AS "tipo",
+                d.prioridade AS "prioridade",
+                d.status AS "status",
+                p.nome AS "projeto",
+                u.nome AS "responsavel",
+                TO_CHAR(d.data_criacao, 'DD/MM/YYYY "as" HH24:MI') AS "criacao",
+                TO_CHAR(d.prazo_finalizacao, 'YYYY-MM-DD') AS "prazo"
+         FROM demandas d
+         JOIN projetos p ON p.id = d.id_projeto
+         LEFT JOIN usuarios u ON u.id = d.id_responsavel
+         WHERE d.id = :id`,
+        { id }
+    )
 
-// Cria uma demanda e devolve ela
-function criar(dados) {
-    const demanda = {
-        id: proximoNumero,
-        titulo: dados.titulo,
-        descricao: dados.descricao,
-        projeto: dados.projeto || "",
-        tipo: dados.tipo || "",
-        prioridade: dados.prioridade || "",
-        status: dados.status || "Aberta",
-        responsavel: dados.responsavel || "",
-        prazo: dados.prazo || "",
-        criacao: agora(),
-        comentarios: [],
-        historico: [{ texto: "Demanda cadastrada no sistema", autor: usuario, data: agora() }]
+    const demanda = dados.rows?.[0]
+    if (!demanda) {
+        return null
     }
 
-    demandas.push(demanda)
-    proximoNumero = proximoNumero + 1
-    return demanda
+    const comentarios = await conn.execute(
+        `SELECT NVL(u.nome, 'Sem autor') AS "autor",
+                TO_CHAR(c.data_criacao, 'DD/MM/YYYY "as" HH24:MI') AS "data",
+                c.texto AS "texto"
+         FROM comentarios c
+         LEFT JOIN usuarios u ON u.id = c.id_usuario
+         WHERE c.id_demanda = :id
+         ORDER BY c.id`,
+        { id }
+    )
+
+    // O historico vem do mais novo para o mais antigo. A criacao da
+    // demanda entra no fim, como primeiro acontecimento.
+    const historico = await conn.execute(
+        `SELECT 'Status alterado de ' || h.status_anterior || ' para ' || h.status_novo AS "texto",
+                NVL(u.nome, 'Sem autor') AS "autor",
+                TO_CHAR(h.data_alteracao, 'DD/MM/YYYY "as" HH24:MI') AS "data"
+         FROM historico_status h
+         LEFT JOIN usuarios u ON u.id = h.id_usuario
+         WHERE h.id_demanda = :id
+         ORDER BY h.id DESC`,
+        { id }
+    )
+
+    demanda.responsavel = demanda.responsavel ?? ""
+    demanda.prazo = demanda.prazo ?? ""
+    demanda.comentarios = comentarios.rows ?? []
+    demanda.historico = [
+        ...(historico.rows ?? []),
+        { texto: "Demanda cadastrada no sistema", autor: "Sistema", data: demanda.criacao }
+    ]
+
+    return { demanda, proximos: proximosStatus(demanda.status) }
+}
+
+// Le o numero da URL. Devolve null se nao for um numero valido.
+function lerId(req: Request) {
+    const id = Number(req.params.id)
+    return Number.isInteger(id) && id > 0 ? id : null
 }
 
 /* ---------------------------------------------------------------------
    LIGACAO ENTRE A LISTAGEM E ESTA TELA
 
-   Cada linha da listagem tem um link "Detalhes" apontando para
-   produtodetalhes.html, um arquivo que nunca existiu no projeto. Como
-   aquela tela nao e minha, em vez de alterar o arquivo dela eu atendo
-   esse endereco aqui e redireciono para a tela de Detalhes.
+   Versoes antigas da listagem apontavam para produtodetalhes.html, um
+   arquivo que nunca existiu. O endereco continua atendido aqui e manda
+   para a tela de Detalhes.
    --------------------------------------------------------------------- */
-rotas.get("/produtodetalhes.html", (req, res) => {
+rotas.get("/produtodetalhes.html", (req: Request, res: Response) => {
     res.redirect("/detalhes.demanda.html")
 })
 
-// Devolve todas as demandas, para a tela de listagem montar a tabela
-rotas.get("/api/demandas", (req, res) => {
-    res.json({ total: demandas.length, demandas: demandas })
-})
-
-// Cadastra uma demanda. Aceita nome e associado, que sao os nomes que a
-// tela de cadastro ja usa para titulo e projeto.
-rotas.post("/api/demandas", (req, res) => {
-    const c = req.body
-    const titulo = String(c.titulo || c.nome || "").trim()
-    const descricao = String(c.descricao || "").trim()
-
-    if (titulo === "") {
-        return res.status(400).json({ erro: "Informe o titulo da demanda." })
-    }
-
-    if (descricao === "") {
-        return res.status(400).json({ erro: "Informe a descricao da demanda." })
-    }
-
-    const status = c.status ? semAcento(c.status) : "Aberta"
-
-    if (!ordem.includes(status) && status !== "Cancelada") {
-        return res.status(400).json({ erro: "Status desconhecido: " + c.status })
-    }
-
-    const demanda = criar({
-        titulo: titulo,
-        descricao: descricao,
-        projeto: c.projeto || c.associado,
-        tipo: c.tipo,
-        prioridade: c.prioridade,
-        status: status,
-        responsavel: c.responsavel,
-        prazo: c.prazo
-    })
-
-    res.status(201).json({ demanda: demanda, proximos: proximosStatus(demanda.status) })
-})
-
 // Envia uma demanda para a tela de Detalhes
-rotas.get("/api/demanda/:id", (req, res) => {
-    const demanda = procurar(req.params.id)
+rotas.get("/api/demanda/:id", async (req: Request, res: Response) => {
+    const id = lerId(req)
+    if (id === null) {
+        return res.status(400).json({ erro: "Numero de demanda invalido." })
+    }
 
-    if (!demanda) {
+    let conn
+    try {
+        conn = await getConn()
+        const resultado = await buscarDemanda(conn, id)
 
-        // Mensagem diferente quando ainda nao ha nenhuma demanda, para a
-        // pessoa entender que falta cadastrar e nao que houve um erro
-        if (demandas.length === 0) {
-            return res.status(404).json({ erro: "Nenhuma demanda cadastrada ainda." })
+        if (!resultado) {
+            return res.status(404).json({ erro: "Demanda nao encontrada." })
         }
 
-        return res.status(404).json({ erro: "Demanda nao encontrada." })
+        res.json(resultado)
+    } catch (erro) {
+        console.error(erro)
+        res.status(500).json({ erro: "Erro ao buscar a demanda no banco de dados." })
+    } finally {
+        if (conn) await conn.close()
     }
-
-    res.json({ demanda: demanda, proximos: proximosStatus(demanda.status) })
 })
 
 // Registra um comentario
-rotas.post("/api/demanda/:id/comentarios", (req, res) => {
-    const demanda = procurar(req.params.id)
-    const texto = req.body.texto
+rotas.post("/api/demanda/:id/comentarios", async (req: Request, res: Response) => {
+    const id = lerId(req)
+    const texto = String(req.body.texto ?? "").trim()
 
-    if (!demanda) {
-        return res.status(404).json({ erro: "Demanda nao encontrada." })
+    if (id === null) {
+        return res.status(400).json({ erro: "Numero de demanda invalido." })
     }
 
-    // O trim remove os espacos do comeco e do fim
-    if (!texto || texto.trim() === "") {
+    if (texto === "") {
         return res.status(400).json({ erro: "Escreva o comentario antes de enviar." })
     }
 
-    demanda.comentarios.push({ autor: usuario, data: agora(), texto: texto.trim() })
+    if (texto.length > 2000) {
+        return res.status(400).json({ erro: "O comentario pode ter no maximo 2000 caracteres." })
+    }
 
-    res.json({ demanda: demanda, proximos: proximosStatus(demanda.status) })
+    let conn
+    try {
+        conn = await getConn()
+
+        if (!(await buscarDemanda(conn, id))) {
+            return res.status(404).json({ erro: "Demanda nao encontrada." })
+        }
+
+        await conn.execute(
+            "INSERT INTO comentarios (id_demanda, id_usuario, texto) VALUES (:id, :usuario, :texto)",
+            { id, usuario: ID_USUARIO, texto },
+            { autoCommit: true }
+        )
+
+        res.json(await buscarDemanda(conn, id))
+    } catch (erro) {
+        console.error(erro)
+        res.status(500).json({ erro: "Erro ao salvar o comentario." })
+    } finally {
+        if (conn) await conn.close()
+    }
 })
 
-// Muda o status da demanda
-rotas.patch("/api/demanda/:id/status", (req, res) => {
-    const demanda = procurar(req.params.id)
+// Muda o status da demanda e registra a mudanca no historico
+rotas.patch("/api/demanda/:id/status", async (req: Request, res: Response) => {
+    const id = lerId(req)
+    const novo = statusOficial(req.body.status ?? "")
 
-    if (!demanda) {
-        return res.status(404).json({ erro: "Demanda nao encontrada." })
+    if (id === null) {
+        return res.status(400).json({ erro: "Numero de demanda invalido." })
     }
 
-    const novo = semAcento(req.body.status || "")
+    let conn
+    try {
+        conn = await getConn()
+        const atual = await buscarDemanda(conn, id)
 
-    // A tela ja mostra so os botoes permitidos, mas a conferencia e feita
-    // aqui tambem: quem chamar a rota por fora do navegador fica barrado
-    if (!proximosStatus(demanda.status).includes(novo)) {
-        return res.status(400).json({ erro: "Esta demanda nao pode passar para " + novo + "." })
+        if (!atual) {
+            return res.status(404).json({ erro: "Demanda nao encontrada." })
+        }
+
+        // A tela ja mostra so os botoes permitidos, mas a conferencia e feita
+        // aqui tambem: quem chamar a rota por fora do navegador fica barrado
+        if (!atual.proximos.includes(novo)) {
+            return res.status(400).json({ erro: "Esta demanda nao pode passar para " + (req.body.status ?? "") + "." })
+        }
+
+        await conn.execute(
+            "UPDATE demandas SET status = :novo, data_atualizacao = CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE) WHERE id = :id",
+            { novo, id }
+        )
+        await conn.execute(
+            "INSERT INTO historico_status (id_demanda, id_usuario, status_anterior, status_novo) VALUES (:id, :usuario, :anterior, :novo)",
+            { id, usuario: ID_USUARIO, anterior: statusOficial(atual.demanda.status), novo }
+        )
+        await conn.commit()
+
+        res.json(await buscarDemanda(conn, id))
+    } catch (erro) {
+        console.error(erro)
+        if (conn) await conn.rollback()
+        res.status(500).json({ erro: "Erro ao mudar o status." })
+    } finally {
+        if (conn) await conn.close()
     }
-
-    demanda.historico.unshift({
-        texto: "Status alterado de " + demanda.status + " para " + novo,
-        autor: usuario,
-        data: agora()
-    })
-
-    demanda.status = novo
-
-    res.json({ demanda: demanda, proximos: proximosStatus(demanda.status) })
 })

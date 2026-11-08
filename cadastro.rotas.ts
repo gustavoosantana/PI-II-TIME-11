@@ -58,21 +58,24 @@ rotas.post("/demandas", async (req: Request, res: Response) => {
         if (!projeto.rows || projeto.rows.length === 0) {
             return res.status(400).json({ mensagem: "O projeto informado nao existe" });
         }
-        const usuarioExiste = projeto.rows.find((p) =>{return p.ID_RESPONSAVEL === id_responsavel});
-        if(!usuarioExiste) {
+        // Sem responsavel informado, a demanda fica com o lider do projeto
+        const responsavelProjeto = (projeto.rows[0] as any).ID_RESPONSAVEL ?? null;
+        if (id_responsavel !== undefined && id_responsavel !== null && id_responsavel !== responsavelProjeto) {
             return res.status(400).json({mensagem: "Usuario não está associado nesse projeto"});
         }
 
+        // A data vai como texto AAAA-MM-DD: um Date do JavaScript e meia-noite
+        // em Londres, e no horario de Brasilia viraria o dia anterior
         await conn.execute(
-            "INSERT INTO demandas (titulo, descricao, tipo, prioridade, status, id_projeto, id_responsavel, prazo_finalizacao, data_criacao, data_atualizacao) VALUES (:titulo, :descricao, :tipo, :prioridade, 'Aberta', :id_projeto, :id_responsavel, :prazo_finalizacao, SYSDATE, SYSDATE)",
+            "INSERT INTO demandas (titulo, descricao, tipo, prioridade, status, id_projeto, id_responsavel, prazo_finalizacao, data_criacao, data_atualizacao) VALUES (:titulo, :descricao, :tipo, :prioridade, 'Aberta', :id_projeto, :id_responsavel, TO_DATE(:prazo_finalizacao, 'YYYY-MM-DD'), CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE), CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE))",
             {
                 titulo: titulo,
                 descricao: descricao,
                 tipo: tipo,
                 prioridade: prioridade,
                 id_projeto: id_projeto,
-                id_responsavel: id_responsavel ?? null,
-                prazo_finalizacao: dataConvertida
+                id_responsavel: id_responsavel ?? responsavelProjeto,
+                prazo_finalizacao: dataConvertida ? String(data_finalizacao).slice(0, 10) : null
             },
             { autoCommit: true }
         );
@@ -127,7 +130,7 @@ rotas.put("/demandas/:id", async (req: Request, res: Response) => {
         }
 
         const result = await conn.execute(
-            "UPDATE demandas SET titulo = :titulo, descricao = :descricao, tipo = :tipo, prioridade = :prioridade, status = COALESCE(:status, status), id_projeto = :id_projeto, id_responsavel = :id_responsavel, prazo_finalizacao = :prazo_finalizacao, data_atualizacao = SYSDATE WHERE id = :id",
+            "UPDATE demandas SET titulo = :titulo, descricao = :descricao, tipo = :tipo, prioridade = :prioridade, status = COALESCE(:status, status), id_projeto = :id_projeto, id_responsavel = COALESCE(CAST(:id_responsavel AS NUMBER), id_responsavel), prazo_finalizacao = TO_DATE(:prazo_finalizacao, 'YYYY-MM-DD'), data_atualizacao = CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE) WHERE id = :id",
             {
                 id,
                 titulo,
@@ -136,8 +139,9 @@ rotas.put("/demandas/:id", async (req: Request, res: Response) => {
                 prioridade,
                 status: status ?? null,
                 id_projeto,
+                // A tela de edicao nao tem campo de responsavel: sem ele, fica o atual
                 id_responsavel: id_responsavel ?? null,
-                prazo_finalizacao: dataConvertida
+                prazo_finalizacao: dataConvertida ? String(data_finalizacao).slice(0, 10) : null
             },
             { autoCommit: true }
         );
