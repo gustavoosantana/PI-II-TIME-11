@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
+<!-- Autor do arquivo: Enzo Carleti Teixeira - Tela: Listagem de Demandas -->
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,11 +22,11 @@
         <h1 id="titulo">Listagem de Demandas</h1>
 
         <form class="busca" id="form_busca" novalidate>
-            <input 
-                type="text" 
-                id="campoBusca" 
-                name="busca" 
-                class="pesquisa" 
+            <input
+                type="text"
+                id="campoBusca"
+                name="busca"
+                class="pesquisa"
                 placeholder="Buscar demanda"
                 maxlength="60"
                 autocomplete="off"
@@ -31,6 +34,72 @@
 
             <button type="submit">Buscar</button>
         </form>
+
+        <!-- Filtros e ordenação. O name de cada campo é o parâmetro enviado para GET /demandas -->
+        <div class="filtros">
+            <label>
+                Status
+                <select name="status" class="filtro">
+                    <option value="">Todos</option>
+                    <option value="Aberta">Aberta</option>
+                    <option value="Em andamento">Em andamento</option>
+                    <option value="Em revisão">Em revisão</option>
+                    <option value="Concluída">Concluída</option>
+                    <option value="Cancelada">Cancelada</option>
+                </select>
+            </label>
+
+            <label>
+                Prioridade
+                <select name="prioridade" class="filtro">
+                    <option value="">Todas</option>
+                    <option value="Crítica">Crítica</option>
+                    <option value="Alta">Alta</option>
+                    <option value="Média">Média</option>
+                    <option value="Baixa">Baixa</option>
+                </select>
+            </label>
+
+            <label>
+                Tipo
+                <select name="tipo" class="filtro">
+                    <option value="">Todos</option>
+                    <option value="Tarefa">Tarefa</option>
+                    <option value="Defeito">Defeito</option>
+                    <option value="Melhoria">Melhoria</option>
+                    <option value="Documentação">Documentação</option>
+                </select>
+            </label>
+
+            <label>
+                Responsável
+                <input type="text" name="responsavel" class="filtro" autocomplete="off">
+            </label>
+
+            <label>
+                Projeto
+                <input type="text" name="projeto" class="filtro" autocomplete="off">
+            </label>
+
+            <label>
+                Ordenar por
+                <select name="ordenarPor" class="filtro">
+                    <option value="">Padrão</option>
+                    <option value="prioridade">Prioridade</option>
+                    <option value="criacao">Data de criação</option>
+                    <option value="prazo">Prazo de finalização</option>
+                    <option value="status">Status</option>
+                </select>
+            </label>
+
+            <label>
+                Ordem
+                <select name="ordem" class="filtro">
+                    <option value="asc">Crescente</option>
+                    <option value="desc">Decrescente</option>
+                </select>
+            </label>
+        </div>
 
         <p class="erro" id="erroBusca" role="alert" hidden></p>
 
@@ -53,95 +122,12 @@
                     </tr>
                 </thead>
 
-                <tbody>
-                    <tr>
-                        <td>Exemplo A</td>
-                        <td>Exemplo A</td>
-                        <td>Exemplo A</td>
-                        <td>Exemplo A</td>
-                        <td>Exemplo A</td>
-                        <td>Exemplo A</td>
-                        <td>Exemplo A</td>
-                        <td>Exemplo A</td>
-                        <td>
-                            <a href="produtodetalhes.html">Detalhes</a>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>Exemplo B</td>
-                        <td>Exemplo B</td>
-                        <td>Exemplo B</td>
-                        <td>Exemplo B</td>
-                        <td>Exemplo B</td>
-                        <td>Exemplo B</td>
-                        <td>Exemplo B</td>
-                        <td>Exemplo B</td>
-                        <td>
-                            <a href="produtodetalhes.html">Detalhes</a>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>Exemplo C</td>
-                        <td>Exemplo C</td>
-                        <td>Exemplo C</td>
-                        <td>Exemplo C</td>
-                        <td>Exemplo C</td>
-                        <td>Exemplo C</td>
-                        <td>Exemplo C</td>
-                        <td>Exemplo C</td>
-                        <td>
-                            <a href="produtodetalhes.html">Detalhes</a>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>Exemplo D</td>
-                        <td>Exemplo D</td>
-                        <td>Exemplo D</td>
-                        <td>Exemplo D</td>
-                        <td>Exemplo D</td>
-                        <td>Exemplo D</td>
-                        <td>Exemplo D</td>
-                        <td>Exemplo D</td>
-                        <td>
-                            <a href="produtodetalhes.html">Detalhes</a>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>Exemplo E</td>
-                        <td>Exemplo E</td>
-                        <td>Exemplo E</td>
-                        <td>Exemplo E</td>
-                        <td>Exemplo E</td>
-                        <td>Exemplo E</td>
-                        <td>Exemplo E</td>
-                        <td>Exemplo E</td>
-                        <td>
-                            <a href="produtodetalhes.html">Detalhes</a>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>Exemplo F</td>
-                        <td>Exemplo F</td>
-                        <td>Exemplo F</td>
-                        <td>Exemplo F</td>
-                        <td>Exemplo F</td>
-                        <td>Exemplo F</td>
-                        <td>Exemplo F</td>
-                        <td>Exemplo F</td>
-                        <td>
-                            <a href="produtodetalhes.html">Detalhes</a>
-                        </td>
-                    </tr>
-                </tbody>
+                <!-- As linhas são criadas pelo listagem.js com os dados que vêm da API -->
+                <tbody></tbody>
             </table>
         </div>
 
-        <p class="total">Total de demandas: 6</p>
+        <p class="total"></p>
 
     </div>
 </body>
