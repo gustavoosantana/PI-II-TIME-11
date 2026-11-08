@@ -1,6 +1,7 @@
 // Autor do arquivo: Enzo Carleti Teixeira
 
 import { Router, Request, Response } from "express"
+import { getConn } from "./db"
 const rotasListagem = Router()
 
 // Formato de cada demanda
@@ -22,27 +23,32 @@ const tipos = ["Tarefa", "Defeito", "Melhoria", "Documentação"]
 const prioridades = ["Crítica", "Alta", "Média", "Baixa"]
 const listaStatus = ["Aberta", "Em andamento", "Em revisão", "Concluída", "Cancelada"]
 
-// Demandas de teste
-const demandas: Demanda[] = [
-    { id: 1, titulo: "Exemplo 1", descricao: "Descrição do exemplo 1", tipo: "Defeito", prioridade: "Crítica", status: "Aberta", projeto: "Projeto 1", responsavel: "Responsável 1", dataCriacao: "2026-09-01", prazo: "2026-10-20" },
-    { id: 2, titulo: "Exemplo 2", descricao: "Descrição do exemplo 2", tipo: "Tarefa", prioridade: "Alta", status: "Em andamento", projeto: "Projeto 1", responsavel: "Responsável 2", dataCriacao: "2026-09-03", prazo: "2026-10-30" },
-    { id: 3, titulo: "Exemplo 3", descricao: "Descrição do exemplo 3", tipo: "Documentação", prioridade: "Baixa", status: "Aberta", projeto: "Projeto 2", responsavel: "", dataCriacao: "2026-09-05", prazo: "" },
-    { id: 4, titulo: "Exemplo 4", descricao: "Descrição do exemplo 4", tipo: "Melhoria", prioridade: "Média", status: "Em revisão", projeto: "Projeto 3", responsavel: "Responsável 3", dataCriacao: "2026-09-08", prazo: "2026-10-22" },
-    { id: 5, titulo: "Exemplo 5", descricao: "Descrição do exemplo 5", tipo: "Defeito", prioridade: "Crítica", status: "Em andamento", projeto: "Projeto 2", responsavel: "Responsável 2", dataCriacao: "2026-09-10", prazo: "2026-10-19" },
-    { id: 6, titulo: "Exemplo 6", descricao: "Descrição do exemplo 6", tipo: "Melhoria", prioridade: "Baixa", status: "Concluída", projeto: "Projeto 1", responsavel: "Responsável 1", dataCriacao: "2026-09-12", prazo: "2026-09-30" },
-    { id: 7, titulo: "Exemplo 7", descricao: "Descrição do exemplo 7", tipo: "Tarefa", prioridade: "Média", status: "Aberta", projeto: "Projeto 3", responsavel: "Responsável 3", dataCriacao: "2026-09-15", prazo: "2026-11-15" },
-    { id: 8, titulo: "Exemplo 8", descricao: "Descrição do exemplo 8", tipo: "Documentação", prioridade: "Média", status: "Cancelada", projeto: "Projeto 3", responsavel: "", dataCriacao: "2026-09-18", prazo: "" },
-    { id: 9, titulo: "Exemplo 9", descricao: "Descrição do exemplo 9", tipo: "Defeito", prioridade: "Alta", status: "Aberta", projeto: "Projeto 2", responsavel: "Responsável 1", dataCriacao: "2026-09-22", prazo: "2026-10-25" },
-    { id: 10, titulo: "Exemplo 10", descricao: "Descrição do exemplo 10", tipo: "Tarefa", prioridade: "Baixa", status: "Em revisão", projeto: "Projeto 2", responsavel: "Responsável 3", dataCriacao: "2026-09-25", prazo: "2026-11-05" },
-    { id: 11, titulo: "Exemplo 11", descricao: "Descrição do exemplo 11", tipo: "Melhoria", prioridade: "Alta", status: "Aberta", projeto: "Projeto 1", responsavel: "", dataCriacao: "2026-10-01", prazo: "2026-11-20" },
-    { id: 12, titulo: "Exemplo 12", descricao: "Descrição do exemplo 12", tipo: "Defeito", prioridade: "Média", status: "Concluída", projeto: "Projeto 3", responsavel: "Responsável 2", dataCriacao: "2026-10-05", prazo: "2026-10-15" }
-]
+// Consulta que busca as demandas no banco.
+// Os JOIN trazem o nome do projeto e do responsável, que ficam em outras tabelas.
+// É LEFT JOIN no responsável porque a demanda pode estar sem responsável.
+// O TO_CHAR transforma as datas em texto no formato 2026-10-20.
+const SQL_DEMANDAS = `
+    SELECT d.id AS "id",
+           d.titulo AS "titulo",
+           d.descricao AS "descricao",
+           d.tipo AS "tipo",
+           d.prioridade AS "prioridade",
+           d.status AS "status",
+           p.nome AS "projeto",
+           u.nome AS "responsavel",
+           TO_CHAR(d.data_criacao, 'YYYY-MM-DD') AS "dataCriacao",
+           TO_CHAR(d.prazo_finalizacao, 'YYYY-MM-DD') AS "prazo"
+    FROM demandas d
+    JOIN projetos p ON p.id = d.id_projeto
+    LEFT JOIN usuarios u ON u.id = d.id_responsavel
+    ORDER BY d.id
+`
 
 // Lista as demandas. Aceita filtros, busca e ordenação pela URL, por exemplo:
 // EXEMPLOS: /demandas?status=Aberta&prioridade=Alta
 // /demandas?busca=exemplo
 // /demandas?ordenarPor=prazo&ordem=desc
-rotasListagem.get("/demandas", (req: Request, res: Response) => {
+rotasListagem.get("/demandas", async (req: Request, res: Response) => {
 
     // Pega os valores que vieram na URL
     const status = req.query.status as string
@@ -54,8 +60,29 @@ rotasListagem.get("/demandas", (req: Request, res: Response) => {
     const ordenarPor = req.query.ordenarPor as string
     const ordem = req.query.ordem as string
 
-    // Faz uma cópia da lista pra não mudar a original.
-    let resultado = [...demandas]
+    // Busca as demandas no banco de dados
+    let resultado: Demanda[] = []
+    let conn
+    try {
+        conn = await getConn()
+        const consulta = await conn.execute(SQL_DEMANDAS)
+        resultado = (consulta.rows ?? []) as Demanda[]
+    } catch (erro) {
+        console.error(erro)
+        return res.status(500).json({ erro: "Erro ao buscar as demandas no banco de dados" })
+    } finally {
+        if (conn) await conn.close()
+    }
+
+    // No banco, o campo vazio vem como null. Troca por "" porque os filtros e a ordenação usam texto.
+    resultado.forEach((d) => {
+        if (!d.responsavel) {
+            d.responsavel = ""
+        }
+        if (!d.prazo) {
+            d.prazo = ""
+        }
+    })
 
     // Cada filtro tira da lista as demandas que não combinam com ele.
 
