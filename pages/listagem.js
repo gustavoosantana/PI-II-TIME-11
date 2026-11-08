@@ -58,7 +58,7 @@ function mostrarDemandas(demandas) {
     // Atualiza o contador de demandas em baixo da tabela
     total.textContent = "Total de demandas: " + demandas.length
 
-    // Faz com que o aviso apareça caso nenhuma demanda tenha sido encontrada
+    // Faz com que o aviso apareça caso não tenha resultados
     if (demandas.length === 0) {
         sem_resultado.style.display = "flex"
     } else {
@@ -66,7 +66,7 @@ function mostrarDemandas(demandas) {
     }
 }
 
-// Mostra a mensagem de erro na tela e limpa a tabela
+// Mostra a mensagem de erro e tira a busca do usuario
 function mostrarErro(mensagem) {
     erro_busca.textContent = mensagem
     erro_busca.style.display = "flex"
@@ -110,7 +110,7 @@ async function carregarDemandas() {
         mostrarDemandas(dados.demandas)
 
     } catch (erro) {
-        // Cai aqui se o servidor estiver desligado, por exemplo
+        // Erro se o servidor naõ estiver ligado
         mostrarErro("Não foi possível conectar ao servidor.")
     }
 }
@@ -127,7 +127,7 @@ form_busca.addEventListener("submit", (e) => {
     // Esconde a mensagem de erro da tentativa anterior
     erro_busca.style.display = "none"
 
-    // O return interrompe a função e impede a busca com dado inválido
+    // Vai parar a função caso algo não seja validado
     if (termo === "") {
         erro_busca.textContent = "Digite um termo para buscar."
         erro_busca.style.display = "flex"
@@ -151,7 +151,7 @@ form_busca.addEventListener("submit", (e) => {
     carregarDemandas()
 })
 
-// Função que é executada quando tudo na busca é apagado e mostra as demandas de novo
+// Função para mostrar tudo depois de apagarem a busca das demandas 
 campo_busca.addEventListener("input", () => {
     if (campo_busca.value === "") {
         carregarDemandas()
