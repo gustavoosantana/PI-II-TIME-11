@@ -1,134 +1,167 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+// Autor do arquivo: Enzo Carleti Teixeira
 
-<!-- Autor do arquivo: Enzo Carleti Teixeira - Tela: Listagem de Demandas -->
+// Elementos usados no código
+const form_busca = document.querySelector("#form_busca");
+const campo_busca = document.querySelector(".pesquisa");
+const erro_busca = document.querySelector("#erroBusca");
+const sem_resultado = document.querySelector("#sem_resultado");
+const corpo_tabela = document.querySelector("tbody");
+const total = document.querySelector(".total");
+const filtros = document.querySelectorAll(".filtro");
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Listagem de Demandas</title>
-    <link rel="stylesheet" href="listagem-style.css">
-    <script src="listagem.js" defer></script>
-</head>
-<body>
+// Transforma "2026-10-20" em "20/10/2026"
+function formatarData(data) {
+    const partes = data.split("-")
+    return partes[2] + "/" + partes[1] + "/" + partes[0]
+}
 
-    <header>
-        <h1>Nome do Site</h1>
-        <a href="dashboard.html">Menu</a>
-    </header>
+// Cria uma célula com o texto informado e coloca na linha da tabela
+function adicionarCelula(linha, texto) {
+    const celula = document.createElement("td")
+    celula.textContent = texto
+    linha.appendChild(celula)
+}
 
-    <div class="principal">
+// Mostra na tabela as demandas que vieram da API
+function mostrarDemandas(demandas) {
+    corpo_tabela.innerHTML = ""
 
-        <h1 id="titulo">Listagem de Demandas</h1>
+    demandas.forEach((demanda) => {
+        const linha = document.createElement("tr")
 
-        <form class="busca" id="form_busca" novalidate>
-            <input
-                type="text"
-                id="campoBusca"
-                name="busca"
-                class="pesquisa"
-                placeholder="Buscar demanda"
-                maxlength="60"
-                autocomplete="off"
-            >
+        adicionarCelula(linha, demanda.titulo)
+        adicionarCelula(linha, demanda.tipo)
+        adicionarCelula(linha, demanda.prioridade)
+        adicionarCelula(linha, demanda.status)
+        adicionarCelula(linha, demanda.projeto)
+        adicionarCelula(linha, demanda.responsavel || "Sem responsável")
+        adicionarCelula(linha, formatarData(demanda.dataCriacao))
 
-            <button type="submit">Buscar</button>
-        </form>
+        // Demanda sem prazo mostra um aviso no lugar da data
+        if (demanda.prazo) {
+            adicionarCelula(linha, formatarData(demanda.prazo))
+        } else {
+            adicionarCelula(linha, "Sem prazo")
+        }
 
-        <!-- Filtros e ordenação. O name de cada campo é o parâmetro enviado para GET /demandas -->
-        <div class="filtros">
-            <label>
-                Status
-                <select name="status" class="filtro">
-                    <option value="">Todos</option>
-                    <option value="Aberta">Aberta</option>
-                    <option value="Em andamento">Em andamento</option>
-                    <option value="Em revisão">Em revisão</option>
-                    <option value="Concluída">Concluída</option>
-                    <option value="Cancelada">Cancelada</option>
-                </select>
-            </label>
+        // Link que abre os detalhes desta demanda pelo id dela
+        const celula_link = document.createElement("td")
+        const link = document.createElement("a")
+        link.href = "detalhes.demanda.html?id=" + demanda.id
+        link.textContent = "Detalhes"
+        celula_link.appendChild(link)
+        linha.appendChild(celula_link)
 
-            <label>
-                Prioridade
-                <select name="prioridade" class="filtro">
-                    <option value="">Todas</option>
-                    <option value="Crítica">Crítica</option>
-                    <option value="Alta">Alta</option>
-                    <option value="Média">Média</option>
-                    <option value="Baixa">Baixa</option>
-                </select>
-            </label>
+        corpo_tabela.appendChild(linha)
+    })
 
-            <label>
-                Tipo
-                <select name="tipo" class="filtro">
-                    <option value="">Todos</option>
-                    <option value="Tarefa">Tarefa</option>
-                    <option value="Defeito">Defeito</option>
-                    <option value="Melhoria">Melhoria</option>
-                    <option value="Documentação">Documentação</option>
-                </select>
-            </label>
+    // Atualiza o contador de demandas em baixo da tabela
+    total.textContent = "Total de demandas: " + demandas.length
 
-            <label>
-                Responsável
-                <input type="text" name="responsavel" class="filtro" autocomplete="off">
-            </label>
+    // Faz com que o aviso apareça caso nenhuma demanda tenha sido encontrada
+    if (demandas.length === 0) {
+        sem_resultado.style.display = "flex"
+    } else {
+        sem_resultado.style.display = "none"
+    }
+}
 
-            <label>
-                Projeto
-                <input type="text" name="projeto" class="filtro" autocomplete="off">
-            </label>
+// Mostra a mensagem de erro na tela e limpa a tabela
+function mostrarErro(mensagem) {
+    erro_busca.textContent = mensagem
+    erro_busca.style.display = "flex"
+    corpo_tabela.innerHTML = ""
+    total.textContent = ""
+    sem_resultado.style.display = "none"
+}
 
-            <label>
-                Ordenar por
-                <select name="ordenarPor" class="filtro">
-                    <option value="">Padrão</option>
-                    <option value="prioridade">Prioridade</option>
-                    <option value="criacao">Data de criação</option>
-                    <option value="prazo">Prazo de finalização</option>
-                    <option value="status">Status</option>
-                </select>
-            </label>
+// Chama a API com a busca, os filtros e a ordenação escolhidos
+async function carregarDemandas() {
 
-            <label>
-                Ordem
-                <select name="ordem" class="filtro">
-                    <option value="asc">Crescente</option>
-                    <option value="desc">Decrescente</option>
-                </select>
-            </label>
-        </div>
+    // Esconde a mensagem de erro da tentativa anterior
+    erro_busca.style.display = "none"
 
-        <p class="erro" id="erroBusca" role="alert" hidden></p>
+    // Monta os parâmetros da URL, por exemplo: status=Aberta&busca=login
+    const parametros = new URLSearchParams()
 
-        <p class="sem_resultado" id="sem_resultado">
-            Nenhuma demanda encontrada.
-        </p>
-        <div class="tabela">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Título</th>
-                        <th>Tipo</th>
-                        <th>Prioridade</th>
-                        <th>Status</th>
-                        <th>Projeto</th>
-                        <th>Responsável</th>
-                        <th>Data de Criação</th>
-                        <th>Prazo de Finalização</th>
-                        <th>Detalhes</th>
-                    </tr>
-                </thead>
+    // Só vai para a URL o que foi preenchido
+    const termo = campo_busca.value.trim()
+    if (termo !== "") {
+        parametros.append("busca", termo)
+    }
 
-                <!-- As linhas são criadas pelo listagem.js com os dados que vêm da API -->
-                <tbody></tbody>
-            </table>
-        </div>
+    // O name de cada campo é o nome do parâmetro que a API espera
+    filtros.forEach((filtro) => {
+        if (filtro.value.trim() !== "") {
+            parametros.append(filtro.name, filtro.value.trim())
+        }
+    })
 
-        <p class="total"></p>
+    try {
+        const resposta = await fetch("/demandas?" + parametros.toString())
+        const dados = await resposta.json()
 
-    </div>
-</body>
-</html>
+        // Se a API devolveu erro (ex: 400), mostra a mensagem dela na tela
+        if (!resposta.ok) {
+            mostrarErro("Erro " + resposta.status + ": " + dados.erro)
+            return
+        }
+
+        mostrarDemandas(dados.demandas)
+
+    } catch (erro) {
+        // Cai aqui se o servidor estiver desligado, por exemplo
+        mostrarErro("Não foi possível conectar ao servidor.")
+    }
+}
+
+// Executa quando algo é buscado
+form_busca.addEventListener("submit", (e) => {
+
+    // Cancela o envio do padrão pra nao recarregar a página
+    e.preventDefault()
+
+    // Pega o texto digitado e remove os espaços do começo e do fim
+    const termo = campo_busca.value.trim()
+
+    // Esconde a mensagem de erro da tentativa anterior
+    erro_busca.style.display = "none"
+
+    // O return interrompe a função e impede a busca com dado inválido
+    if (termo === "") {
+        erro_busca.textContent = "Digite um termo para buscar."
+        erro_busca.style.display = "flex"
+        return
+    }
+
+    // Validação de mínimo de caracteres
+    if (termo.length < 2) {
+        erro_busca.textContent = "Digite pelo menos 2 caracteres."
+        erro_busca.style.display = "flex"
+        return
+    }
+
+    // Validação do maximo de caracteres
+    if (termo.length > 60) {
+        erro_busca.textContent = "Digite no máximo 60 caracteres."
+        erro_busca.style.display = "flex"
+        return
+    }
+
+    carregarDemandas()
+})
+
+// Função que é executada quando tudo na busca é apagado e mostra as demandas de novo
+campo_busca.addEventListener("input", () => {
+    if (campo_busca.value === "") {
+        carregarDemandas()
+    }
+})
+
+// Quando um filtro ou a ordenação muda, busca as demandas de novo
+filtros.forEach((filtro) => {
+    filtro.addEventListener("change", carregarDemandas)
+})
+
+// Busca as demandas assim que a página abre
+carregarDemandas()
