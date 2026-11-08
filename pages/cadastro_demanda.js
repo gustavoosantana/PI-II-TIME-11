@@ -58,31 +58,40 @@ async function listarProjetos() {
     
     try {
         const resposta = await fetch(URL);
-        
+        const resultado = await resposta.json();
         if (!resposta.ok) {
-            throw new Error(`Erro ao buscar projetos: ${resposta.status}`);
+            mostrarErro(resultado);
+            return [];
         }
-        
-        const dados = await resposta.json();
-        return dados;
+        return resultado;
     } 
     catch (erro) {
-        console.error("Falha no fetch de projetos:", erro);
+        mostrarErro({ mensagem: erro.message || "Falha ao buscar projetos." });
         return [];
     }
 }
 
 async function criarDemanda(demanda) {
-    const URL = `${API_BASE_URL}/projetos`;
-    const resposta = await fetch(URL, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(demanda)
-    })
-    return await resposta.json()
+    const URL = `${API_BASE_URL}/demandas`;
+    try {
+        const resposta = await fetch(URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(demanda)
+        });
+        const resultado = await resposta.json();
+        if (!resposta.ok) {
+            mostrarErro(resultado);
+            return;
+        }
+        return resultado;
+    } catch (erro) {
+        mostrarErro({ mensagem: erro.message || "Falha ao cadastrar demanda." });
+    }
 }
+
 async function formularioDemanda() {
     const demanda = {
         titulo: campo_nome.value,
@@ -94,4 +103,8 @@ async function formularioDemanda() {
     };
 
     await criarDemanda(demanda);
+}
+
+function mostrarErro(json) {
+    alert(json.mensagem || json.erro || "Ocorreu um erro ao processar a solicitação.");
 }
