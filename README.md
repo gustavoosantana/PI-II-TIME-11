@@ -34,4 +34,4 @@ Depois abra `http://localhost:3000/login.html` no navegador.
 Usuários de teste: `teste1@gmail.com` / `123` (Administrador), `teste2@gmail.com` / `456` (Líder de Projeto) e `teste3@gmail.com` / `789` (Membro da Equipe).
 
 ### Dashboard (José Gabriel Bedani)
-A tela `pages/dashboard.html` chama `GET /dashboard`, que lê as demandas direto do banco (tabelas `demandas` e `usuarios`) e mostra os totais por status, prioridade e tipo, as demandas críticas em aberto e as próximas do prazo. O parâmetro `?dias=N` muda o período (1 a 365, padrão 7). Os testes da rota estão em `testes/dashboard.http`.
+A tela `pages/dashboard.html` chama `GET /dashboard`, que lê as demandas direto do banco (tabelas `demandas` e `usuarios`) e mostra os totais por status, prioridade e tipo, as demandas críticas em aberto e as próximas do prazo. O parâmetro `?dias=N` muda o período (1 a 365, padrão 7).

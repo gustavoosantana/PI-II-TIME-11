@@ -2,6 +2,8 @@
 <html lang="pt-BR">
 
 <!-- Autor: José Gabriel Bedani - Tela: Dashboard -->
+<!-- Esta página só tem a estrutura. Os números são preenchidos pelo dashboard.js
+     com os dados que vêm da API (GET /dashboard). O visual está no dashboard.css. -->
 
 <head>
     <meta charset="UTF-8">
@@ -10,6 +12,7 @@
     <title>Dashboard</title>
 
     <link rel="stylesheet" href="dashboard.css">
+    <!-- defer: o script só roda depois que o HTML terminou de carregar -->
     <script src="dashboard.js" defer></script>
 </head>
 
@@ -21,12 +24,13 @@
 
     <main>
 
-        <!-- Mensagem de erro vinda da API (fica escondida até acontecer um erro) -->
+        <!-- Mensagem de erro da API. Começa escondida; o dashboard.js mostra quando dá erro -->
         <p id="mensagemErro" class="erro" hidden></p>
 
         <!-- Filtros do dashboard -->
         <div class="filtro-dashboard">
 
+            <!-- Escolhe qual seção aparece (ou todas). Tratado em mostrarSecoes() no JS -->
             <label for="filtroVisualizacao">Visualizar:</label>
             <select id="filtroVisualizacao">
                 <option value="todos">Todos</option>
@@ -37,6 +41,7 @@
                 <option value="prazos">Próximas do prazo</option>
             </select>
 
+            <!-- Quantos dias contam como "próximo do prazo". Vai para a API em ?dias=N -->
             <label for="diasPrazo">Prazo nos próximos:</label>
             <select id="diasPrazo">
                 <option value="7">7 dias</option>
@@ -47,8 +52,11 @@
         </div>
 
 
-        <!-- Resumo das demandas -->
-        <section id="secaoResumo" class="secao-dashboard" data-secao="resumo">
+        <!-- Cada seção tem a classe secao-dashboard e um data-secao.
+             O data-secao precisa ser igual ao value da opção do select "Visualizar". -->
+
+        <!-- Resumo das demandas (quantidade por status) -->
+        <section class="secao-dashboard" data-secao="resumo">
 
             <h2>Resumo das demandas</h2>
 
@@ -60,7 +68,7 @@
                     </tr>
                 </thead>
 
-                <!-- Os números são preenchidos pelo dashboard.js com os dados da API -->
+                <!-- Os ids (total, aberta, ...) são usados pelo mostrarNumero() do JS -->
                 <tbody>
                     <tr><td>Total</td><td id="total">-</td></tr>
                     <tr><td>Abertas</td><td id="aberta">-</td></tr>
@@ -75,7 +83,7 @@
 
 
         <!-- Demandas por prioridade -->
-        <section id="secaoPrioridade" class="secao-dashboard" data-secao="prioridade">
+        <section class="secao-dashboard" data-secao="prioridade">
 
             <h2>Demandas por prioridade</h2>
 
@@ -92,7 +100,7 @@
 
 
         <!-- Demandas por tipo -->
-        <section id="secaoTipo" class="secao-dashboard" data-secao="tipo">
+        <section class="secao-dashboard" data-secao="tipo">
 
             <h2>Demandas por tipo</h2>
 
@@ -108,8 +116,8 @@
         </section>
 
 
-        <!-- Demandas críticas em aberto (cards criados pelo dashboard.js) -->
-        <section id="secaoCriticas" class="secao-dashboard" data-secao="criticas">
+        <!-- Demandas críticas em aberto. Os cards são criados pelo mostrarDemandas() do JS -->
+        <section class="secao-dashboard" data-secao="criticas">
 
             <h2>Demandas críticas em aberto</h2>
             <p id="criterioEmAberto" class="criterio"></p>
@@ -118,8 +126,8 @@
         </section>
 
 
-        <!-- Demandas próximas do prazo (cards criados pelo dashboard.js) -->
-        <section id="secaoPrazos" class="secao-dashboard" data-secao="prazos">
+        <!-- Demandas próximas do prazo. Os cards são criados pelo mostrarDemandas() do JS -->
+        <section class="secao-dashboard" data-secao="prazos">
 
             <h2>Demandas próximas do prazo</h2>
             <p id="criterioPrazo" class="criterio"></p>
