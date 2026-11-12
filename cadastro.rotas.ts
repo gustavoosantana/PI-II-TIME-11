@@ -58,9 +58,11 @@ rotas.post("/demandas", async (req: Request, res: Response) => {
         if (!projeto.rows || projeto.rows.length === 0) {
             return res.status(400).json({ mensagem: "O projeto informado nao existe" });
         }
-        const usuarioExiste = projeto.rows.find((p) =>{return p.ID_RESPONSAVEL === id_responsavel});
-        if(!usuarioExiste) {
-            return res.status(400).json({mensagem: "Usuario não está associado nesse projeto"});
+        if (id_responsavel !== undefined && id_responsavel !== null && id_responsavel !== "") {
+            const usuarioExiste = projeto.rows.find((p: any) => Number(p.ID_RESPONSAVEL) === Number(id_responsavel));
+            if (!usuarioExiste) {
+                return res.status(400).json({ mensagem: "Usuario não está associado nesse projeto" });
+            }
         }
 
         await conn.execute(
@@ -121,13 +123,22 @@ rotas.put("/demandas/:id", async (req: Request, res: Response) => {
     try {
         conn = await getConn();
 
-        const projeto = await conn.execute("SELECT id FROM projetos WHERE id = :id", { id: id_projeto });
+        const projeto = await conn.execute("SELECT id, id_responsavel FROM projetos WHERE id = :id", { id: id_projeto });
         if (!projeto.rows || projeto.rows.length === 0) {
             return res.status(400).json({ mensagem: "O projeto informado nao existe" });
         }
 
+        // Responsavel e opcional: so valida o vinculo quando ele for informado (mesma regra do POST)
+        const responsavelInformado = id_responsavel !== undefined && id_responsavel !== null && id_responsavel !== "";
+        if (responsavelInformado) {
+            const usuarioExiste = projeto.rows.find((p: any) => Number(p.ID_RESPONSAVEL) === Number(id_responsavel));
+            if (!usuarioExiste) {
+                return res.status(400).json({ mensagem: "Usuario não está associado nesse projeto" });
+            }
+        }
+
         const result = await conn.execute(
-            "UPDATE demandas SET titulo = :titulo, descricao = :descricao, tipo = :tipo, prioridade = :prioridade, status = COALESCE(:status, status), id_projeto = :id_projeto, id_responsavel = :id_responsavel, prazo_finalizacao = :prazo_finalizacao, data_atualizacao = SYSDATE WHERE id = :id",
+            "UPDATE demandas SET titulo = :titulo, descricao = :descricao, tipo = :tipo, prioridade = :prioridade, status = COALESCE(:status, status), id_projeto = :id_projeto, id_responsavel = COALESCE(:id_responsavel, id_responsavel), prazo_finalizacao = COALESCE(:prazo_finalizacao, prazo_finalizacao), data_atualizacao = SYSDATE WHERE id = :id",
             {
                 id,
                 titulo,
@@ -136,7 +147,7 @@ rotas.put("/demandas/:id", async (req: Request, res: Response) => {
                 prioridade,
                 status: status ?? null,
                 id_projeto,
-                id_responsavel: id_responsavel ?? null,
+                id_responsavel: responsavelInformado ? id_responsavel : null,
                 prazo_finalizacao: dataConvertida
             },
             { autoCommit: true }

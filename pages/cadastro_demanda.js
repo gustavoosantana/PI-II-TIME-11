@@ -20,7 +20,13 @@ const botao = document.querySelector(".botao");
 
 // Executa a validação ao clicar no botão de cadastro
 botao.addEventListener("click", async (e) => {
-    e.preventDefault()
+    e.preventDefault();
+
+    // Esconde as mensagens de erro de tentativas anteriores
+    [erro_nome, erro_desc, erro_assoc, erro_tipos, erro_prio, erro_status, erro_prazo].forEach((el) => {
+        if (el) el.style.display = "none"
+    })
+
     // Verifica se os campos de texto obrigatórios foram preenchidos
 
     if (campo_nome.value === "") {
@@ -93,11 +99,23 @@ async function criarDemanda(demanda) {
 }
 
 async function formularioDemanda() {
+    // Procura o projeto digitado (pelo nome) na lista vinda do servidor
+    const projetos = await listarProjetos();
+    const nomeProjeto = campo_assoc.value.trim().toLowerCase();
+    const projeto = projetos.find((p) => String(p.nome).trim().toLowerCase() === nomeProjeto);
+
+    if (!projeto) {
+        erro_assoc.style.display = "flex";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+    }
+
     const demanda = {
         titulo: campo_nome.value,
         descricao: campo_desc.value,
-        tipo: campo_tipos.value,
-        prioridade: campo_prio.value,
+        tipo: document.querySelector('input[name="Tipo"]:checked')?.value,
+        prioridade: document.querySelector('input[name="Prioridade"]:checked')?.value,
+        id_projeto: projeto.id,
         data_criacao: "",
         data_finalizacao: ""
     };
