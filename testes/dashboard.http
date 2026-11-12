@@ -1,5 +1,7 @@
 # Autor: José Gabriel Bedani
 # Testes da rota GET /dashboard
+# Os números vêm das tabelas demandas e usuarios do banco Oracle.
+# Se o banco estiver desligado ou sem as tabelas, a rota devolve 500.
 
 ### Válida: período padrão (7 dias). Esperado: 200
 GET http://localhost:3000/dashboard
