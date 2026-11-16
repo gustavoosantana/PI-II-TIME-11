@@ -2,9 +2,9 @@
 const API_BASE_URL = "";
 
 // Mostra no topo o usuario que entrou pela tela de login
-const usuario = JSON.parse(sessionStorage.getItem("usuario") || "null") || { nome: "Visitante", perfil: "" };
-document.getElementById("usuario_nome").textContent = usuario.nome;
-document.getElementById("usuario_perfil").textContent = usuario.perfil;
+const usuario = usuarioLogado || {};
+document.getElementById("usuario_nome").textContent = usuario.nome || "";
+document.getElementById("usuario_perfil").textContent = usuario.perfil || "";
 
 // Seleciona as mensagens de erro e os campos do formulário
 const erro_nome = document.getElementById("erro_nome");
@@ -122,7 +122,8 @@ async function formularioDemanda() {
         tipo: document.querySelector('input[name="Tipo"]:checked')?.value,
         prioridade: document.querySelector('input[name="Prioridade"]:checked')?.value,
         id_projeto: projeto.id,
-        data_finalizacao: campo_data.value || null
+        data_finalizacao: campo_data.value || null,
+        id_usuario: usuario.id // o servidor confere a permissao do perfil
     };
 
     const resultado = await criarDemanda(demanda);

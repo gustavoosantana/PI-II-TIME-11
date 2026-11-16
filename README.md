@@ -31,7 +31,17 @@ npm install
 npm run dev
 ```
 Depois abra `http://localhost:3000/login.html` no navegador.
-Usuários de teste: `teste1@gmail.com` / `123` (Administrador), `teste2@gmail.com` / `456` (Líder de Projeto) e `teste3@gmail.com` / `789` (Membro da Equipe).
+Usuários (um por integrante):
+
+| Integrante | E-mail | Senha | Perfil |
+|---|---|---|---|
+| Gustavo de Oliveira de Santana | `gustavo@time11.com` | `gustavo123` | Administrador |
+| Gabriel Lopes Londe Rodrigues | `gabriel@time11.com` | `gabriel123` | Líder de Projeto (Sistema de Demandas) |
+| José Gabriel Bedani | `jose@time11.com` | `jose123` | Líder de Projeto (Portal do Aluno) |
+| Eduardo Martins Colmati | `eduardo@time11.com` | `eduardo123` | Membro da Equipe |
+| Enzo Carleti Teixeira | `enzo@time11.com` | `enzo123` | Membro da Equipe |
+
+Permissões (arquivo `permissoes.ts`): o Administrador pode tudo; o Líder de Projeto cadastra e altera as demandas dos projetos que lidera; o Membro da Equipe altera só as demandas em que é o responsável e não cadastra. Todos veem as demandas e podem comentar.
 
 ### Dashboard (José Gabriel Bedani)
 A tela `pages/dashboard.html` chama `GET /dashboard`, que lê as demandas direto do banco (tabelas `demandas` e `usuarios`) e mostra os totais por status, prioridade e tipo, as demandas críticas em aberto e as próximas do prazo. O parâmetro `?dias=N` muda o período (1 a 365, padrão 7).

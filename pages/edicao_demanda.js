@@ -62,7 +62,8 @@ async function atualizarDemanda() {
             prioridade: campo_prioridade.value,
             status: campo_status_selecionado.value,
             id_projeto,
-            data_finalizacao: campo_data.value || null
+            data_finalizacao: campo_data.value || null,
+            id_usuario: usuarioLogado?.id // o servidor confere a permissao do perfil
         };
 
         const resposta = await fetch(`${API_BASE_URL}/demandas/${id}`, {
@@ -114,10 +115,17 @@ async function carregarDemanda() {
     }
 
     try {
-        const resposta = await fetch(`${API_BASE_URL}/api/demanda/${id}`);
+        const resposta = await fetch(`${API_BASE_URL}/api/demanda/${id}?usuario=${usuarioLogado?.id}`);
         const dados = await resposta.json();
         if (!resposta.ok) {
             mostrarErro(dados);
+            return;
+        }
+
+        // Sem permissao para alterar esta demanda: avisa e volta aos detalhes
+        if (!dados.podeAlterar) {
+            mostrarErro({ mensagem: dados.motivo });
+            window.location.href = "detalhes.demanda.html?id=" + id;
             return;
         }
 

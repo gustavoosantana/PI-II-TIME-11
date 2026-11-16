@@ -23,9 +23,9 @@ const erro_comentario = document.querySelector("#erro_comentario")
 const id = new URLSearchParams(window.location.search).get("id") || "1"
 
 // Usuario que entrou pela tela de login (guardado pelo login.js)
-const usuario = JSON.parse(sessionStorage.getItem("usuario") || "null") || { id: 1, nome: "Visitante", perfil: "" }
-document.getElementById("usuario_nome").textContent = usuario.nome
-document.getElementById("usuario_perfil").textContent = usuario.perfil
+const usuario = usuarioLogado || {}
+document.getElementById("usuario_nome").textContent = usuario.nome || ""
+document.getElementById("usuario_perfil").textContent = usuario.perfil || ""
 
 // O botao Editar leva o numero desta demanda para a tela de Edicao
 document.getElementById("link_editar").href = "edicao_demanda.html?id=" + id
@@ -103,6 +103,15 @@ function mostrar(dados) {
     // andamento: ela precisa passar por Em revisao antes.
     botoes_status.innerHTML = ""
 
+    // Sem permissao (permissoes.ts no servidor), some o botao Editar e
+    // os botoes de status, e a tela explica o motivo
+    document.getElementById("link_editar").style.display = dados.podeAlterar ? "" : "none"
+    if (!dados.podeAlterar) {
+        secao_acoes.style.display = dados.proximos.length === 0 ? "none" : "block"
+        status_atual.textContent = "Status atual: " + demanda.status + ". " + (dados.motivo || "")
+        return mostrarComentariosEHistorico(demanda)
+    }
+
     // Demanda ja encerrada nao muda mais de status, entao a secao some
     secao_acoes.style.display = dados.proximos.length === 0 ? "none" : "block"
 
@@ -114,6 +123,11 @@ function mostrar(dados) {
         botoes_status.appendChild(botao)
     })
 
+    mostrarComentariosEHistorico(demanda)
+}
+
+// Lista de comentarios e historico da demanda
+function mostrarComentariosEHistorico(demanda) {
     // Comentarios
     contador.textContent = "(" + demanda.comentarios.length + ")"
     lista_comentarios.innerHTML = ""
@@ -152,7 +166,7 @@ function mostrar(dados) {
 
 // Busca os dados no servidor quando a pagina abre
 async function carregar() {
-    const resposta = await fetch("/api/demanda/" + id)
+    const resposta = await fetch("/api/demanda/" + id + "?usuario=" + usuario.id)
     const dados = await resposta.json()
 
     // Sem demanda para mostrar, a tela explica o motivo e esconde o resto,

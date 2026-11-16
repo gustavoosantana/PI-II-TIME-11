@@ -1,5 +1,8 @@
 // AUTORIA: GUSTAVO
 
+// Abrir a tela de login encerra a sessao anterior (botao Sair)
+sessionStorage.removeItem('usuario')
+
 const form = document.getElementById('login-form')
 const CampoEmail = document.getElementById('email')
 const CampoSenha = document.getElementById('senha')

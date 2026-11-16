@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import { Router } from "express"
 import { getConn } from "./db"
+import { motivoNaoPodeAlterar, motivoNaoPodeCadastrar } from "./permissoes"
 export const rotas = Router()
 
 type Tipo = "Tarefa" | "Defeito" | "Melhoria" | "Documentação";
@@ -58,6 +59,13 @@ rotas.post("/demandas", async (req: Request, res: Response) => {
         if (!projeto.rows || projeto.rows.length === 0) {
             return res.status(400).json({ mensagem: "O projeto informado nao existe" });
         }
+
+        // Permissao por perfil (permissoes.ts)
+        const semPermissao = await motivoNaoPodeCadastrar(conn, req.body.id_usuario, Number(id_projeto));
+        if (semPermissao) {
+            return res.status(403).json({ mensagem: semPermissao });
+        }
+
         if (id_responsavel !== undefined && id_responsavel !== null && id_responsavel !== "") {
             const usuarioExiste = projeto.rows.find((p: any) => Number(p.ID_RESPONSAVEL) === Number(id_responsavel));
             if (!usuarioExiste) {
@@ -124,6 +132,12 @@ rotas.put("/demandas/:id", async (req: Request, res: Response) => {
     let conn;
     try {
         conn = await getConn();
+
+        // Permissao por perfil (permissoes.ts)
+        const semPermissao = await motivoNaoPodeAlterar(conn, req.body.id_usuario, id);
+        if (semPermissao) {
+            return res.status(403).json({ mensagem: semPermissao });
+        }
 
         const projeto = await conn.execute("SELECT id, id_responsavel FROM projetos WHERE id = :id", { id: id_projeto });
         if (!projeto.rows || projeto.rows.length === 0) {

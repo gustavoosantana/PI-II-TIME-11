@@ -3,6 +3,7 @@
 
 import { Router, Request, Response } from "express"
 import { getConn } from "./db"
+import { motivoNaoPodeAlterar } from "./permissoes"
 
 // Um Router agrupa rotas. Ele fica neste arquivo separado para as minhas
 // rotas nao precisarem ser escritas dentro do app.ts, que e da equipe.
@@ -137,7 +138,9 @@ rotas.get("/api/demanda/:id", async (req: Request, res: Response) => {
             return res.status(404).json({ erro: "Demanda nao encontrada." })
         }
 
-        res.json(resultado)
+        // A tela manda ?usuario=id para saber se mostra os botoes de alterar
+        const motivo = await motivoNaoPodeAlterar(conn, req.query.usuario, id)
+        res.json({ ...resultado, podeAlterar: motivo === null, motivo })
     } catch (erro) {
         console.error(erro)
         res.status(500).json({ erro: "Erro ao buscar a demanda no banco de dados." })
@@ -177,7 +180,8 @@ rotas.post("/api/demanda/:id/comentarios", async (req: Request, res: Response) =
             { autoCommit: true }
         )
 
-        res.json(await buscarDemanda(conn, id))
+        const motivo = await motivoNaoPodeAlterar(conn, req.body.id_usuario, id)
+        res.json({ ...(await buscarDemanda(conn, id)), podeAlterar: motivo === null, motivo })
     } catch (erro) {
         console.error(erro)
         res.status(500).json({ erro: "Erro ao salvar o comentario." })
@@ -204,6 +208,12 @@ rotas.patch("/api/demanda/:id/status", async (req: Request, res: Response) => {
             return res.status(404).json({ erro: "Demanda nao encontrada." })
         }
 
+        // Permissao por perfil (permissoes.ts)
+        const semPermissao = await motivoNaoPodeAlterar(conn, req.body.id_usuario, id)
+        if (semPermissao) {
+            return res.status(403).json({ erro: semPermissao })
+        }
+
         // A tela ja mostra so os botoes permitidos, mas a conferencia e feita
         // aqui tambem: quem chamar a rota por fora do navegador fica barrado
         if (!atual.proximos.includes(novo)) {
@@ -220,7 +230,8 @@ rotas.patch("/api/demanda/:id/status", async (req: Request, res: Response) => {
         )
         await conn.commit()
 
-        res.json(await buscarDemanda(conn, id))
+        const motivo = await motivoNaoPodeAlterar(conn, req.body.id_usuario, id)
+        res.json({ ...(await buscarDemanda(conn, id)), podeAlterar: motivo === null, motivo })
     } catch (erro) {
         console.error(erro)
         if (conn) await conn.rollback()

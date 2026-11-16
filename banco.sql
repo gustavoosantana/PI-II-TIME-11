@@ -76,45 +76,49 @@ CREATE TABLE historico (
 -- 3. DADOS DE EXEMPLO
 -- Como os ids são gerados em ordem, o 1º insert de cada tabela recebe id 1, o 2º recebe id 2, e assim por diante.
 
--- Usuários: Ana = 1, Lucas = 2, Maria = 3 (os mesmos e-mails e senhas do login)
-INSERT INTO usuarios (nome, email, senha, perfil) VALUES ('Ana',   'teste1@gmail.com', '123', 'Administrador');
-INSERT INTO usuarios (nome, email, senha, perfil) VALUES ('Lucas', 'teste2@gmail.com', '456', 'Líder de Projeto');
-INSERT INTO usuarios (nome, email, senha, perfil) VALUES ('Maria', 'teste3@gmail.com', '789', 'Membro da Equipe');
+-- Usuários: os integrantes do grupo. Gustavo = 1, Gabriel = 2, José = 3, Eduardo = 4, Enzo = 5
+-- Administrador pode tudo. Líder de Projeto cadastra e altera as demandas dos projetos que lidera.
+-- Membro da Equipe altera só as demandas em que é o responsável.
+INSERT INTO usuarios (nome, email, senha, perfil) VALUES ('Gustavo de Oliveira de Santana', 'gustavo@time11.com', 'gustavo123', 'Administrador');
+INSERT INTO usuarios (nome, email, senha, perfil) VALUES ('Gabriel Lopes Londe Rodrigues',  'gabriel@time11.com', 'gabriel123', 'Líder de Projeto');
+INSERT INTO usuarios (nome, email, senha, perfil) VALUES ('José Gabriel Bedani',            'jose@time11.com',    'jose123',    'Líder de Projeto');
+INSERT INTO usuarios (nome, email, senha, perfil) VALUES ('Eduardo Martins Colmati',        'eduardo@time11.com', 'eduardo123', 'Membro da Equipe');
+INSERT INTO usuarios (nome, email, senha, perfil) VALUES ('Enzo Carleti Teixeira',          'enzo@time11.com',    'enzo123',    'Membro da Equipe');
 
--- Projetos: Sistema de Demandas = 1, Portal do Aluno = 2 (id_responsavel 2 = Lucas)
+-- Projetos: Sistema de Demandas = 1 (líder Gabriel, id 2), Portal do Aluno = 2 (líder José, id 3)
 INSERT INTO projetos (nome, descricao, data_inicio, data_fim, situacao, id_responsavel)
 VALUES ('Sistema de Demandas', 'Projeto Integrador II', DATE '2026-08-01', DATE '2026-12-10', 'Ativo', 2);
 INSERT INTO projetos (nome, descricao, data_inicio, data_fim, situacao, id_responsavel)
-VALUES ('Portal do Aluno', 'Consulta de notas e frequência', DATE '2026-09-01', NULL, 'Ativo', 2);
+VALUES ('Portal do Aluno', 'Consulta de notas e frequência', DATE '2026-09-01', NULL, 'Ativo', 3);
 
 -- Demandas (ids 1 a 8, na ordem abaixo)
 -- As datas usam o horário de Brasília (o servidor Oracle está em UTC).
 -- "... AS DATE) + 3" quer dizer "daqui a 3 dias".
 -- Assim o dashboard sempre tem demandas próximas do prazo, em qualquer dia da apresentação.
 INSERT INTO demandas (titulo, descricao, tipo, prioridade, status, id_projeto, id_responsavel, prazo_finalizacao, data_criacao, data_atualizacao)
-VALUES ('Erro ao salvar demanda', 'Dá erro 500 ao salvar sem descrição', 'Defeito', 'Crítica', 'Aberta', 1, 3, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE) + 2, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE), CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
+VALUES ('Erro ao salvar demanda', 'Dá erro 500 ao salvar sem descrição', 'Defeito', 'Crítica', 'Aberta', 1, 4, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE) + 2, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE), CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
 INSERT INTO demandas (titulo, descricao, tipo, prioridade, status, id_projeto, id_responsavel, prazo_finalizacao, data_criacao, data_atualizacao)
-VALUES ('Criar tela de login', 'Tela com validação de e-mail e senha', 'Tarefa', 'Alta', 'Em andamento', 1, 3, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE) + 5, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE), CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
+VALUES ('Criar tela de login', 'Tela com validação de e-mail e senha', 'Tarefa', 'Alta', 'Em andamento', 1, 5, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE) + 5, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE), CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
 INSERT INTO demandas (titulo, descricao, tipo, prioridade, status, id_projeto, id_responsavel, prazo_finalizacao, data_criacao, data_atualizacao)
 VALUES ('Escrever o README', 'Instruções de instalação e uso', 'Documentação', 'Baixa', 'Aberta', 1, NULL, NULL, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE), CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
 INSERT INTO demandas (titulo, descricao, tipo, prioridade, status, id_projeto, id_responsavel, prazo_finalizacao, data_criacao, data_atualizacao)
-VALUES ('Consulta de notas lenta', 'Demora mais de 10 segundos', 'Melhoria', 'Média', 'Em revisão', 2, 3, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE) + 12, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE), CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
+VALUES ('Consulta de notas lenta', 'Demora mais de 10 segundos', 'Melhoria', 'Média', 'Em revisão', 2, 4, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE) + 12, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE), CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
 INSERT INTO demandas (titulo, descricao, tipo, prioridade, status, id_projeto, id_responsavel, prazo_finalizacao, data_criacao, data_atualizacao)
-VALUES ('Configurar o Oracle', 'Conexão e arquivo .env', 'Tarefa', 'Alta', 'Concluída', 1, 3, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE) - 3, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE), CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
+VALUES ('Configurar o Oracle', 'Conexão e arquivo .env', 'Tarefa', 'Alta', 'Concluída', 1, 2, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE) - 3, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE), CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
 INSERT INTO demandas (titulo, descricao, tipo, prioridade, status, id_projeto, id_responsavel, prazo_finalizacao, data_criacao, data_atualizacao)
 VALUES ('Tema escuro', 'Opção de tema escuro nas telas', 'Melhoria', 'Baixa', 'Cancelada', 2, NULL, NULL, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE), CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
 INSERT INTO demandas (titulo, descricao, tipo, prioridade, status, id_projeto, id_responsavel, prazo_finalizacao, data_criacao, data_atualizacao)
-VALUES ('Senha aparece no console', 'A senha fica visível após o login', 'Defeito', 'Crítica', 'Em andamento', 2, 3, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE) + 1, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE), CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
+VALUES ('Senha aparece no console', 'A senha fica visível após o login', 'Defeito', 'Crítica', 'Em andamento', 2, 5, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE) + 1, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE), CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
 INSERT INTO demandas (titulo, descricao, tipo, prioridade, status, id_projeto, id_responsavel, prazo_finalizacao, data_criacao, data_atualizacao)
-VALUES ('Manual do usuário', 'Explicar como usar cada tela', 'Documentação', 'Média', 'Aberta', 2, NULL, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE) + 20, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE), CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
+VALUES ('Manual do usuário', 'Explicar como usar cada tela', 'Documentação', 'Média', 'Aberta', 2, 3, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE) + 20, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE), CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
 
--- Comentários (id_demanda, id_usuario): demanda 1 comentada por Lucas (2), demanda 2 por Maria (3)
+-- Comentários (id_demanda, id_usuario): demanda 1 comentada por Gabriel (2), demanda 2 por Enzo (5)
 INSERT INTO comentarios (id_demanda, id_usuario, texto, data_registro) VALUES (1, 2, 'Reproduzi o erro, falta validar no servidor.', CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
-INSERT INTO comentarios (id_demanda, id_usuario, texto, data_registro) VALUES (2, 3, 'Já terminei o HTML e o CSS.', CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
+INSERT INTO comentarios (id_demanda, id_usuario, texto, data_registro) VALUES (2, 5, 'Já terminei o HTML e o CSS.', CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
 
--- Histórico (id_demanda, id_usuario): demanda 2 por Maria (3), demanda 4 por Lucas (2), demanda 6 por Ana (1)
-INSERT INTO historico (id_demanda, id_usuario, descricao, data_registro) VALUES (2, 3, 'alterou o status de Aberta para Em andamento', CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
-INSERT INTO historico (id_demanda, id_usuario, descricao, data_registro) VALUES (4, 2, 'alterou o status de Em andamento para Em revisão', CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
+-- Histórico (id_demanda, id_usuario): demanda 2 por Enzo (5), demanda 4 por José (3), demanda 6 por Gustavo (1)
+INSERT INTO historico (id_demanda, id_usuario, descricao, data_registro) VALUES (2, 5, 'alterou o status de Aberta para Em andamento', CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
+INSERT INTO historico (id_demanda, id_usuario, descricao, data_registro) VALUES (4, 3, 'alterou o status de Em andamento para Em revisão', CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
 INSERT INTO historico (id_demanda, id_usuario, descricao, data_registro) VALUES (6, 1, 'cancelou a demanda', CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
 
 COMMIT;
