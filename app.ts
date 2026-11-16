@@ -31,7 +31,7 @@ app.use(rotasDetalhes)
 app.use(rotasDashboard)
 
 app.get("/", (req: Request, res: Response) => {
-    res.send("Inicio")
+    res.redirect("/login.html")
 })
 
 // app.listen(3000, () => {
@@ -48,16 +48,23 @@ async function encerrarServidor() {
     }
 }
 async function iniciarServidor() {
-    try {
-        await initPool();
-        app.listen(PORT, () => {
+    // O servidor abre mesmo sem banco: as telas carregam e as rotas que
+    // consultam o Oracle respondem com erro ate a conexao existir.
+    // O Oracle da PUC so e alcancado de dentro da VPN.
+    app.listen(PORT, () => {
         console.log(`Servidor ativo na porta ${PORT}`);
     });
     process.on("SIGINT", encerrarServidor);
     process.on("SIGTERM", encerrarServidor);
+
+    try {
+        await initPool();
+        const teste = await getConn();
+        await teste.close();
+        console.log("Conectado ao banco Oracle.");
     } catch (erro) {
-        console.error("Falha ao iniciar o servidor:", erro);
-        process.exit(1);
+        await closePool();
+        console.error("Banco Oracle indisponivel (fora da VPN da PUC?):", (erro as Error).message);
     }
 }
 

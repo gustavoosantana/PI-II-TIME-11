@@ -68,7 +68,7 @@ async function buscarDemanda(conn: any, id: number) {
 
     const comentarios = await conn.execute(
         `SELECT NVL(u.nome, 'Sem autor') AS "autor",
-                TO_CHAR(c.data_criacao, 'DD/MM/YYYY "as" HH24:MI') AS "data",
+                TO_CHAR(c.data_registro, 'DD/MM/YYYY "as" HH24:MI') AS "data",
                 c.texto AS "texto"
          FROM comentarios c
          LEFT JOIN usuarios u ON u.id = c.id_usuario
@@ -80,10 +80,10 @@ async function buscarDemanda(conn: any, id: number) {
     // O historico vem do mais novo para o mais antigo. A criacao da
     // demanda entra no fim, como primeiro acontecimento.
     const historico = await conn.execute(
-        `SELECT 'Status alterado de ' || h.status_anterior || ' para ' || h.status_novo AS "texto",
+        `SELECT h.descricao AS "texto",
                 NVL(u.nome, 'Sem autor') AS "autor",
-                TO_CHAR(h.data_alteracao, 'DD/MM/YYYY "as" HH24:MI') AS "data"
-         FROM historico_status h
+                TO_CHAR(h.data_registro, 'DD/MM/YYYY "as" HH24:MI') AS "data"
+         FROM historico h
          LEFT JOIN usuarios u ON u.id = h.id_usuario
          WHERE h.id_demanda = :id
          ORDER BY h.id DESC`,
@@ -156,8 +156,8 @@ rotas.post("/api/demanda/:id/comentarios", async (req: Request, res: Response) =
         return res.status(400).json({ erro: "Escreva o comentario antes de enviar." })
     }
 
-    if (texto.length > 2000) {
-        return res.status(400).json({ erro: "O comentario pode ter no maximo 2000 caracteres." })
+    if (texto.length > 500) {
+        return res.status(400).json({ erro: "O comentario pode ter no maximo 500 caracteres." })
     }
 
     let conn
@@ -169,7 +169,7 @@ rotas.post("/api/demanda/:id/comentarios", async (req: Request, res: Response) =
         }
 
         await conn.execute(
-            "INSERT INTO comentarios (id_demanda, id_usuario, texto) VALUES (:id, :usuario, :texto)",
+            "INSERT INTO comentarios (id_demanda, id_usuario, texto, data_registro) VALUES (:id, :usuario, :texto, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE))",
             { id, usuario: ID_USUARIO, texto },
             { autoCommit: true }
         )
@@ -212,7 +212,7 @@ rotas.patch("/api/demanda/:id/status", async (req: Request, res: Response) => {
             { novo, id }
         )
         await conn.execute(
-            "INSERT INTO historico_status (id_demanda, id_usuario, status_anterior, status_novo) VALUES (:id, :usuario, :anterior, :novo)",
+            "INSERT INTO historico (id_demanda, id_usuario, descricao, data_registro) VALUES (:id, :usuario, 'Status alterado de ' || :anterior || ' para ' || :novo, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE))",
             { id, usuario: ID_USUARIO, anterior: statusOficial(atual.demanda.status), novo }
         )
         await conn.commit()
