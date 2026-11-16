@@ -23,34 +23,22 @@ function mostrarErro(json) {
     alert(json.mensagem || json.erro || "Ocorreu um erro ao processar a solicitação.");
 }
 
-async function obterIdProjeto(nomeProjeto) {
+// Preenche a lista de projetos com o que existe no banco
+async function preencherProjetos() {
     const resposta = await fetch(`${API_BASE_URL}/projetos`);
     const projetos = await resposta.json();
     if (!resposta.ok) {
         mostrarErro(projetos);
-        return null;
+        return;
     }
-
-    const projeto = projetos.find((item) =>
-        item.nome.trim().toLowerCase() === nomeProjeto.trim().toLowerCase()
-    );
-
-    if (!projeto) {
-        mostrarErro({ mensagem: "Projeto associado não encontrado." });
-        return null;
-    }
-
-    return projeto.id;
+    projetos.forEach((p) => campo_assoc.add(new Option(p.nome, p.id)));
 }
 
 async function atualizarDemanda() {
     const id = new URLSearchParams(window.location.search).get("id");
 
     try {
-        const id_projeto = await obterIdProjeto(campo_assoc.value);
-        if (id_projeto === null) {
-            return;
-        }
+        const id_projeto = Number(campo_assoc.value);
 
         const campo_tipo = document.querySelector('input[name="Tipo"]:checked');
         const campo_prioridade = document.querySelector('input[name="Prioridade"]:checked');
@@ -115,6 +103,7 @@ async function carregarDemanda() {
     }
 
     try {
+        await preencherProjetos();
         const resposta = await fetch(`${API_BASE_URL}/api/demanda/${id}?usuario=${usuarioLogado?.id}`);
         const dados = await resposta.json();
         if (!resposta.ok) {
@@ -132,7 +121,9 @@ async function carregarDemanda() {
         const demanda = dados.demanda;
         campo_nome.value = demanda.titulo;
         campo_desc.value = demanda.descricao;
-        campo_assoc.value = demanda.projeto;
+        // Seleciona na lista o projeto atual da demanda (a API devolve o nome)
+        const opcao = [...campo_assoc.options].find((o) => o.text === demanda.projeto);
+        if (opcao) campo_assoc.value = opcao.value;
         campo_data.value = demanda.prazo || "";
 
         // Marca a opcao de cada grupo que tem o mesmo valor da demanda

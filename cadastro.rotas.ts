@@ -67,9 +67,10 @@ rotas.post("/demandas", async (req: Request, res: Response) => {
         }
 
         if (id_responsavel !== undefined && id_responsavel !== null && id_responsavel !== "") {
-            const usuarioExiste = projeto.rows.find((p: any) => Number(p.ID_RESPONSAVEL) === Number(id_responsavel));
-            if (!usuarioExiste) {
-                return res.status(400).json({ mensagem: "Usuario não está associado nesse projeto" });
+            // Nao ha tabela de membros por projeto: qualquer usuario cadastrado pode ser responsavel
+            const usuarioExiste = await conn.execute("SELECT id FROM usuarios WHERE id = :id", { id: Number(id_responsavel) });
+            if (!usuarioExiste.rows || usuarioExiste.rows.length === 0) {
+                return res.status(400).json({ mensagem: "O responsavel informado nao existe" });
             }
         }
 
@@ -147,9 +148,10 @@ rotas.put("/demandas/:id", async (req: Request, res: Response) => {
         // Responsavel e opcional: so valida o vinculo quando ele for informado (mesma regra do POST)
         const responsavelInformado = id_responsavel !== undefined && id_responsavel !== null && id_responsavel !== "";
         if (responsavelInformado) {
-            const usuarioExiste = projeto.rows.find((p: any) => Number(p.ID_RESPONSAVEL) === Number(id_responsavel));
-            if (!usuarioExiste) {
-                return res.status(400).json({ mensagem: "Usuario não está associado nesse projeto" });
+            // Nao ha tabela de membros por projeto: qualquer usuario cadastrado pode ser responsavel
+            const usuarioExiste = await conn.execute("SELECT id FROM usuarios WHERE id = :id", { id: Number(id_responsavel) });
+            if (!usuarioExiste.rows || usuarioExiste.rows.length === 0) {
+                return res.status(400).json({ mensagem: "O responsavel informado nao existe" });
             }
         }
 

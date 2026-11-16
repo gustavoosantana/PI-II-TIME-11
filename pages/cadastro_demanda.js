@@ -104,24 +104,21 @@ async function criarDemanda(demanda) {
     }
 }
 
-async function formularioDemanda() {
-    // Procura o projeto digitado (pelo nome) na lista vinda do servidor
+// Preenche a lista de projetos com o que existe no banco
+async function preencherProjetos() {
     const projetos = await listarProjetos();
-    const nomeProjeto = campo_assoc.value.trim().toLowerCase();
-    const projeto = projetos.find((p) => String(p.nome).trim().toLowerCase() === nomeProjeto);
+    projetos.forEach((p) => campo_assoc.add(new Option(p.nome, p.id)));
+}
+preencherProjetos();
 
-    if (!projeto) {
-        erro_assoc.style.display = "flex";
-        window.scrollTo({ top: 0, behavior: "smooth" });
-        return;
-    }
+async function formularioDemanda() {
 
     const demanda = {
         titulo: campo_nome.value,
         descricao: campo_desc.value,
         tipo: document.querySelector('input[name="Tipo"]:checked')?.value,
         prioridade: document.querySelector('input[name="Prioridade"]:checked')?.value,
-        id_projeto: projeto.id,
+        id_projeto: Number(campo_assoc.value),
         data_finalizacao: campo_data.value || null,
         id_usuario: usuario.id // o servidor confere a permissao do perfil
     };

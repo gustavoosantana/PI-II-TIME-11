@@ -1,10 +1,5 @@
 -- Autor: José Gabriel Bedani
--- Projeto: PI-II-TIME-11 - Sistema de Acompanhamento de Demandas
--- O que faz: cria as 5 tabelas do sistema e coloca alguns dados de exemplo.
--- Como usar: abrir no SQL Developer, conectar no banco e executar tudo (F5).
--- Pode ser executado várias vezes: o bloco do passo 1 apaga as tabelas antigas, se existirem.
 
--- 1. APAGA AS TABELAS ANTIGAS (só as que já existem, então não dá erro na primeira vez)
 BEGIN
     FOR t IN (SELECT table_name FROM user_tables
               WHERE table_name IN ('HISTORICO', 'COMENTARIOS', 'DEMANDAS', 'PROJETOS', 'USUARIOS')) LOOP
@@ -13,12 +8,6 @@ BEGIN
 END;
 /
 
--- 2. CRIA AS TABELAS
--- O "id" é gerado sozinho pelo banco (1, 2, 3...), por isso o sistema não precisa enviá-lo.
--- NOT NULL = campo obrigatório. Os campos sem NOT NULL podem ficar vazios.
-
--- Usuários. Perfis: Administrador, Líder de Projeto ou Membro da Equipe
--- (Nesta versão de demonstração a senha fica em texto simples. Num sistema real seria guardada com hash.)
 CREATE TABLE usuarios (
     id     NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     nome   VARCHAR2(100) NOT NULL,
@@ -27,8 +16,6 @@ CREATE TABLE usuarios (
     perfil VARCHAR2(30)  NOT NULL
 );
 
--- Projetos. id_responsavel = usuário responsável pelo projeto
--- data_fim pode ficar vazia (projeto ainda sem data de término)
 CREATE TABLE projetos (
     id             NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     nome           VARCHAR2(100) NOT NULL,
@@ -39,15 +26,13 @@ CREATE TABLE projetos (
     id_responsavel NUMBER NOT NULL REFERENCES usuarios (id)
 );
 
--- Demandas. Cada demanda pertence a um projeto.
--- O responsável e o prazo podem ficar vazios e ser definidos depois.
 CREATE TABLE demandas (
     id                NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     titulo            VARCHAR2(150) NOT NULL,
     descricao         VARCHAR2(500) NOT NULL,
-    tipo              VARCHAR2(20)  NOT NULL,   -- Tarefa, Defeito, Melhoria ou Documentação
-    prioridade        VARCHAR2(20)  NOT NULL,   -- Crítica, Alta, Média ou Baixa
-    status            VARCHAR2(20)  NOT NULL,   -- Aberta, Em andamento, Em revisão, Concluída ou Cancelada
+    tipo              VARCHAR2(20)  NOT NULL,
+    prioridade        VARCHAR2(20)  NOT NULL,
+    status            VARCHAR2(20)  NOT NULL,
     id_projeto        NUMBER NOT NULL REFERENCES projetos (id),
     id_responsavel    NUMBER REFERENCES usuarios (id),
     prazo_finalizacao DATE,
@@ -55,7 +40,6 @@ CREATE TABLE demandas (
     data_atualizacao  DATE NOT NULL
 );
 
--- Comentários feitos em uma demanda
 CREATE TABLE comentarios (
     id            NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     id_demanda    NUMBER NOT NULL REFERENCES demandas (id),
@@ -64,37 +48,25 @@ CREATE TABLE comentarios (
     data_registro DATE NOT NULL
 );
 
--- Histórico de alterações. Nunca se apaga linhas desta tabela
 CREATE TABLE historico (
     id            NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     id_demanda    NUMBER NOT NULL REFERENCES demandas (id),
-    id_usuario    NUMBER NOT NULL REFERENCES usuarios (id),   -- quem fez a alteração
-    descricao     VARCHAR2(300) NOT NULL,                     -- ex: "alterou o status de Aberta para Em andamento"
+    id_usuario    NUMBER NOT NULL REFERENCES usuarios (id),
+    descricao     VARCHAR2(300) NOT NULL,
     data_registro DATE NOT NULL
 );
 
--- 3. DADOS DE EXEMPLO
--- Como os ids são gerados em ordem, o 1º insert de cada tabela recebe id 1, o 2º recebe id 2, e assim por diante.
-
--- Usuários: os integrantes do grupo. Gustavo = 1, Gabriel = 2, José = 3, Eduardo = 4, Enzo = 5
--- Administrador pode tudo. Líder de Projeto cadastra e altera as demandas dos projetos que lidera.
--- Membro da Equipe altera só as demandas em que é o responsável.
 INSERT INTO usuarios (nome, email, senha, perfil) VALUES ('Gustavo de Oliveira de Santana', 'gustavo@time11.com', 'gustavo123', 'Administrador');
 INSERT INTO usuarios (nome, email, senha, perfil) VALUES ('Gabriel Lopes Londe Rodrigues',  'gabriel@time11.com', 'gabriel123', 'Líder de Projeto');
 INSERT INTO usuarios (nome, email, senha, perfil) VALUES ('José Gabriel Bedani',            'jose@time11.com',    'jose123',    'Líder de Projeto');
 INSERT INTO usuarios (nome, email, senha, perfil) VALUES ('Eduardo Martins Colmati',        'eduardo@time11.com', 'eduardo123', 'Membro da Equipe');
 INSERT INTO usuarios (nome, email, senha, perfil) VALUES ('Enzo Carleti Teixeira',          'enzo@time11.com',    'enzo123',    'Membro da Equipe');
 
--- Projetos: Sistema de Demandas = 1 (líder Gabriel, id 2), Portal do Aluno = 2 (líder José, id 3)
 INSERT INTO projetos (nome, descricao, data_inicio, data_fim, situacao, id_responsavel)
 VALUES ('Sistema de Demandas', 'Projeto Integrador II', DATE '2026-08-01', DATE '2026-12-10', 'Ativo', 2);
 INSERT INTO projetos (nome, descricao, data_inicio, data_fim, situacao, id_responsavel)
 VALUES ('Portal do Aluno', 'Consulta de notas e frequência', DATE '2026-09-01', NULL, 'Ativo', 3);
 
--- Demandas (ids 1 a 8, na ordem abaixo)
--- As datas usam o horário de Brasília (o servidor Oracle está em UTC).
--- "... AS DATE) + 3" quer dizer "daqui a 3 dias".
--- Assim o dashboard sempre tem demandas próximas do prazo, em qualquer dia da apresentação.
 INSERT INTO demandas (titulo, descricao, tipo, prioridade, status, id_projeto, id_responsavel, prazo_finalizacao, data_criacao, data_atualizacao)
 VALUES ('Erro ao salvar demanda', 'Dá erro 500 ao salvar sem descrição', 'Defeito', 'Crítica', 'Aberta', 1, 4, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE) + 2, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE), CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
 INSERT INTO demandas (titulo, descricao, tipo, prioridade, status, id_projeto, id_responsavel, prazo_finalizacao, data_criacao, data_atualizacao)
@@ -112,11 +84,9 @@ VALUES ('Senha aparece no console', 'A senha fica visível após o login', 'Defe
 INSERT INTO demandas (titulo, descricao, tipo, prioridade, status, id_projeto, id_responsavel, prazo_finalizacao, data_criacao, data_atualizacao)
 VALUES ('Manual do usuário', 'Explicar como usar cada tela', 'Documentação', 'Média', 'Aberta', 2, 3, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE) + 20, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE), CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
 
--- Comentários (id_demanda, id_usuario): demanda 1 comentada por Gabriel (2), demanda 2 por Enzo (5)
 INSERT INTO comentarios (id_demanda, id_usuario, texto, data_registro) VALUES (1, 2, 'Reproduzi o erro, falta validar no servidor.', CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
 INSERT INTO comentarios (id_demanda, id_usuario, texto, data_registro) VALUES (2, 5, 'Já terminei o HTML e o CSS.', CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
 
--- Histórico (id_demanda, id_usuario): demanda 2 por Enzo (5), demanda 4 por José (3), demanda 6 por Gustavo (1)
 INSERT INTO historico (id_demanda, id_usuario, descricao, data_registro) VALUES (2, 5, 'alterou o status de Aberta para Em andamento', CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
 INSERT INTO historico (id_demanda, id_usuario, descricao, data_registro) VALUES (4, 3, 'alterou o status de Em andamento para Em revisão', CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
 INSERT INTO historico (id_demanda, id_usuario, descricao, data_registro) VALUES (6, 1, 'cancelou a demanda', CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));

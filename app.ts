@@ -21,6 +21,32 @@ app.use(express.json())
 // Entrega os arquivos HTML, CSS e JS da pasta pages
 app.use(express.static('pages'))
 
+// Log no terminal de cada chamada da API (arquivos de tela nao entram aqui,
+// porque o express.static ja respondeu antes). Mostra quem fez, o que fez e o resultado.
+app.use((req: Request, res: Response, next) => {
+    const inicio = Date.now()
+    const corpo = req.body || {}
+    let resposta: any
+    const jsonOriginal = res.json.bind(res)
+    res.json = (dados: any) => { resposta = dados; return jsonOriginal(dados) }
+
+    res.on("finish", () => {
+        const hora = new Date().toLocaleTimeString("pt-BR")
+        const usuario = corpo.id_usuario ?? req.query.usuario ?? corpo.email ?? "-"
+        let linha = `[${hora}] ${req.method} ${req.originalUrl} -> ${res.statusCode} (${Date.now() - inicio} ms) usuario=${usuario}`
+        if (req.method !== "GET") {
+            if (corpo.titulo) linha += ` titulo="${corpo.titulo}"`
+            if (corpo.id_projeto) linha += ` projeto=${corpo.id_projeto}`
+            if (corpo.status) linha += ` status=${corpo.status}`
+            if (corpo.texto) linha += ` comentario="${corpo.texto}"`
+            const aviso = resposta?.mensagem ?? resposta?.erro
+            if (aviso) linha += ` | ${aviso}`
+        }
+        (res.statusCode >= 400 ? console.error : console.log)(linha)
+    })
+    next()
+})
+
 // Liga as rotas da tela de Detalhes da Demanda
 // app.use(rotasDetalhes)
 
