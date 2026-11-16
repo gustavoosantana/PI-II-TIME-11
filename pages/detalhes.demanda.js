@@ -22,6 +22,11 @@ const erro_comentario = document.querySelector("#erro_comentario")
 // Sem numero nenhum, abre a primeira.
 const id = new URLSearchParams(window.location.search).get("id") || "1"
 
+// Usuario que entrou pela tela de login (guardado pelo login.js)
+const usuario = JSON.parse(sessionStorage.getItem("usuario") || "null") || { id: 1, nome: "Visitante", perfil: "" }
+document.getElementById("usuario_nome").textContent = usuario.nome
+document.getElementById("usuario_perfil").textContent = usuario.perfil
+
 // O botao Editar leva o numero desta demanda para a tela de Edicao
 document.getElementById("link_editar").href = "edicao_demanda.html?id=" + id
 
@@ -167,7 +172,7 @@ async function mudarStatus(status) {
     const resposta = await fetch("/api/demanda/" + id + "/status", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: status })
+        body: JSON.stringify({ status: status, id_usuario: usuario.id })
     })
 
     const dados = await resposta.json()
@@ -198,7 +203,7 @@ form_comentario.addEventListener("submit", async (e) => {
     const resposta = await fetch("/api/demanda/" + id + "/comentarios", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ texto: campo_comentario.value })
+        body: JSON.stringify({ texto: campo_comentario.value, id_usuario: usuario.id })
     })
 
     campo_comentario.value = ""

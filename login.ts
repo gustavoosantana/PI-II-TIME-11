@@ -1,41 +1,27 @@
 import { Request, Response, Router } from 'express'
+import { getConn } from './db'
 
 const loginRotas = Router()
 
-interface Usuario {
-    id: number;
-    email: string;
-    senha: string;
-    perfil: string;
-}
-
-const usuarios: Usuario[] = [
-    {
-        id: 1,
-        email: "teste1@gmail.com",
-        senha: "123",
-        perfil: "Administrador"
-    },
-    {
-        id: 2,
-        email: "teste2@gmail.com",
-        senha: "456",
-        perfil: "Lider de Projeto"
-    },
-    {
-        id: 3,
-        email: "teste3@gmail.com",
-        senha: "789",
-        perfil: "Membro da equipe"
+// Lista os usuarios cadastrados no banco (sem a senha)
+loginRotas.get('/usuarios', async (_req: Request, res: Response) => {
+    let conn
+    try {
+        conn = await getConn()
+        const result = await conn.execute(
+            `SELECT id AS "id", nome AS "nome", email AS "email", perfil AS "perfil" FROM usuarios ORDER BY id`
+        )
+        return res.status(200).json(result.rows ?? [])
+    } catch (erro) {
+        console.error(erro)
+        return res.status(500).json({ mensagem: "Erro ao buscar os usuarios no banco de dados" })
+    } finally {
+        if (conn) await conn.close()
     }
-]
-
-loginRotas.get('/usuarios', (_req: Request, res: Response) => {
-    const usuarioSemSenha = usuarios.map(({ senha, ...resto }) => resto)
-    return res.status(200).json(usuarioSemSenha)
 })
 
-loginRotas.post('/login', (req: Request, res: Response) => {
+// Confere e-mail e senha na tabela usuarios
+loginRotas.post('/login', async (req: Request, res: Response) => {
     const { email, senha } = req.body
 
     if (!email || !senha) {
@@ -44,16 +30,27 @@ loginRotas.post('/login', (req: Request, res: Response) => {
         })
     }
 
-    const usuarioEncontrado = usuarios.find(
-        (user) => user.email === email && user.senha === senha
-    )
+    let conn
+    try {
+        conn = await getConn()
+        const result = await conn.execute(
+            `SELECT id AS "id", nome AS "nome", email AS "email", perfil AS "perfil"
+             FROM usuarios WHERE LOWER(email) = LOWER(:email) AND senha = :senha`,
+            { email: String(email).trim(), senha: String(senha) }
+        )
+        const usuarioEncontrado = result.rows?.[0]
 
-    if (!usuarioEncontrado) {
-        return res.status(401).json({ mensagem: "Usuario não encontrado" })
+        if (!usuarioEncontrado) {
+            return res.status(401).json({ mensagem: "Email ou senha incorretos" })
+        }
+
+        return res.status(200).json(usuarioEncontrado)
+    } catch (erro) {
+        console.error(erro)
+        return res.status(500).json({ mensagem: "Erro ao consultar o banco de dados" })
+    } finally {
+        if (conn) await conn.close()
     }
-
-    const { senha: _, ...usuarioSemSenha } = usuarioEncontrado
-    return res.status(200).json(usuarioSemSenha)
 })
 
 export { loginRotas }

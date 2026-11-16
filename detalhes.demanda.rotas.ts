@@ -8,9 +8,12 @@ import { getConn } from "./db"
 // rotas nao precisarem ser escritas dentro do app.ts, que e da equipe.
 export const rotas = Router()
 
-// Usuario que esta usando o sistema (id 1 da tabela usuarios). Quando a
-// tela de login estiver ligada ao banco, este id passa a vir de la.
-const ID_USUARIO = 1
+// Quem fez a acao: a tela envia o id do usuario que entrou pelo login.
+// Sem ele, fica o usuario 1.
+function lerUsuario(req: Request) {
+    const usuario = Number(req.body.id_usuario)
+    return Number.isInteger(usuario) && usuario > 0 ? usuario : 1
+}
 
 // Ordem do ciclo de vida, definida no Documento de Visao. A demanda nao
 // pula etapas: para ser concluida precisa passar por Em revisão.
@@ -170,7 +173,7 @@ rotas.post("/api/demanda/:id/comentarios", async (req: Request, res: Response) =
 
         await conn.execute(
             "INSERT INTO comentarios (id_demanda, id_usuario, texto, data_registro) VALUES (:id, :usuario, :texto, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE))",
-            { id, usuario: ID_USUARIO, texto },
+            { id, usuario: lerUsuario(req), texto },
             { autoCommit: true }
         )
 
@@ -213,7 +216,7 @@ rotas.patch("/api/demanda/:id/status", async (req: Request, res: Response) => {
         )
         await conn.execute(
             "INSERT INTO historico (id_demanda, id_usuario, descricao, data_registro) VALUES (:id, :usuario, 'Status alterado de ' || :anterior || ' para ' || :novo, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE))",
-            { id, usuario: ID_USUARIO, anterior: statusOficial(atual.demanda.status), novo }
+            { id, usuario: lerUsuario(req), anterior: statusOficial(atual.demanda.status), novo }
         )
         await conn.commit()
 

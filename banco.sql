@@ -88,32 +88,33 @@ INSERT INTO projetos (nome, descricao, data_inicio, data_fim, situacao, id_respo
 VALUES ('Portal do Aluno', 'Consulta de notas e frequência', DATE '2026-09-01', NULL, 'Ativo', 2);
 
 -- Demandas (ids 1 a 8, na ordem abaixo)
--- SYSDATE é a data de hoje. "SYSDATE + 3" quer dizer "daqui a 3 dias".
+-- As datas usam o horário de Brasília (o servidor Oracle está em UTC).
+-- "... AS DATE) + 3" quer dizer "daqui a 3 dias".
 -- Assim o dashboard sempre tem demandas próximas do prazo, em qualquer dia da apresentação.
 INSERT INTO demandas (titulo, descricao, tipo, prioridade, status, id_projeto, id_responsavel, prazo_finalizacao, data_criacao, data_atualizacao)
-VALUES ('Erro ao salvar demanda', 'Dá erro 500 ao salvar sem descrição', 'Defeito', 'Crítica', 'Aberta', 1, 3, SYSDATE + 2, SYSDATE, SYSDATE);
+VALUES ('Erro ao salvar demanda', 'Dá erro 500 ao salvar sem descrição', 'Defeito', 'Crítica', 'Aberta', 1, 3, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE) + 2, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE), CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
 INSERT INTO demandas (titulo, descricao, tipo, prioridade, status, id_projeto, id_responsavel, prazo_finalizacao, data_criacao, data_atualizacao)
-VALUES ('Criar tela de login', 'Tela com validação de e-mail e senha', 'Tarefa', 'Alta', 'Em andamento', 1, 3, SYSDATE + 5, SYSDATE, SYSDATE);
+VALUES ('Criar tela de login', 'Tela com validação de e-mail e senha', 'Tarefa', 'Alta', 'Em andamento', 1, 3, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE) + 5, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE), CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
 INSERT INTO demandas (titulo, descricao, tipo, prioridade, status, id_projeto, id_responsavel, prazo_finalizacao, data_criacao, data_atualizacao)
-VALUES ('Escrever o README', 'Instruções de instalação e uso', 'Documentação', 'Baixa', 'Aberta', 1, NULL, NULL, SYSDATE, SYSDATE);
+VALUES ('Escrever o README', 'Instruções de instalação e uso', 'Documentação', 'Baixa', 'Aberta', 1, NULL, NULL, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE), CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
 INSERT INTO demandas (titulo, descricao, tipo, prioridade, status, id_projeto, id_responsavel, prazo_finalizacao, data_criacao, data_atualizacao)
-VALUES ('Consulta de notas lenta', 'Demora mais de 10 segundos', 'Melhoria', 'Média', 'Em revisão', 2, 3, SYSDATE + 12, SYSDATE, SYSDATE);
+VALUES ('Consulta de notas lenta', 'Demora mais de 10 segundos', 'Melhoria', 'Média', 'Em revisão', 2, 3, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE) + 12, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE), CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
 INSERT INTO demandas (titulo, descricao, tipo, prioridade, status, id_projeto, id_responsavel, prazo_finalizacao, data_criacao, data_atualizacao)
-VALUES ('Configurar o Oracle', 'Conexão e arquivo .env', 'Tarefa', 'Alta', 'Concluída', 1, 3, SYSDATE - 3, SYSDATE, SYSDATE);
+VALUES ('Configurar o Oracle', 'Conexão e arquivo .env', 'Tarefa', 'Alta', 'Concluída', 1, 3, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE) - 3, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE), CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
 INSERT INTO demandas (titulo, descricao, tipo, prioridade, status, id_projeto, id_responsavel, prazo_finalizacao, data_criacao, data_atualizacao)
-VALUES ('Tema escuro', 'Opção de tema escuro nas telas', 'Melhoria', 'Baixa', 'Cancelada', 2, NULL, NULL, SYSDATE, SYSDATE);
+VALUES ('Tema escuro', 'Opção de tema escuro nas telas', 'Melhoria', 'Baixa', 'Cancelada', 2, NULL, NULL, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE), CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
 INSERT INTO demandas (titulo, descricao, tipo, prioridade, status, id_projeto, id_responsavel, prazo_finalizacao, data_criacao, data_atualizacao)
-VALUES ('Senha aparece no console', 'A senha fica visível após o login', 'Defeito', 'Crítica', 'Em andamento', 2, 3, SYSDATE + 1, SYSDATE, SYSDATE);
+VALUES ('Senha aparece no console', 'A senha fica visível após o login', 'Defeito', 'Crítica', 'Em andamento', 2, 3, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE) + 1, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE), CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
 INSERT INTO demandas (titulo, descricao, tipo, prioridade, status, id_projeto, id_responsavel, prazo_finalizacao, data_criacao, data_atualizacao)
-VALUES ('Manual do usuário', 'Explicar como usar cada tela', 'Documentação', 'Média', 'Aberta', 2, NULL, SYSDATE + 20, SYSDATE, SYSDATE);
+VALUES ('Manual do usuário', 'Explicar como usar cada tela', 'Documentação', 'Média', 'Aberta', 2, NULL, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE) + 20, CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE), CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
 
 -- Comentários (id_demanda, id_usuario): demanda 1 comentada por Lucas (2), demanda 2 por Maria (3)
-INSERT INTO comentarios (id_demanda, id_usuario, texto, data_registro) VALUES (1, 2, 'Reproduzi o erro, falta validar no servidor.', SYSDATE);
-INSERT INTO comentarios (id_demanda, id_usuario, texto, data_registro) VALUES (2, 3, 'Já terminei o HTML e o CSS.', SYSDATE);
+INSERT INTO comentarios (id_demanda, id_usuario, texto, data_registro) VALUES (1, 2, 'Reproduzi o erro, falta validar no servidor.', CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
+INSERT INTO comentarios (id_demanda, id_usuario, texto, data_registro) VALUES (2, 3, 'Já terminei o HTML e o CSS.', CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
 
 -- Histórico (id_demanda, id_usuario): demanda 2 por Maria (3), demanda 4 por Lucas (2), demanda 6 por Ana (1)
-INSERT INTO historico (id_demanda, id_usuario, descricao, data_registro) VALUES (2, 3, 'alterou o status de Aberta para Em andamento', SYSDATE);
-INSERT INTO historico (id_demanda, id_usuario, descricao, data_registro) VALUES (4, 2, 'alterou o status de Em andamento para Em revisão', SYSDATE);
-INSERT INTO historico (id_demanda, id_usuario, descricao, data_registro) VALUES (6, 1, 'cancelou a demanda', SYSDATE);
+INSERT INTO historico (id_demanda, id_usuario, descricao, data_registro) VALUES (2, 3, 'alterou o status de Aberta para Em andamento', CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
+INSERT INTO historico (id_demanda, id_usuario, descricao, data_registro) VALUES (4, 2, 'alterou o status de Em andamento para Em revisão', CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
+INSERT INTO historico (id_demanda, id_usuario, descricao, data_registro) VALUES (6, 1, 'cancelou a demanda', CAST(SYSTIMESTAMP AT TIME ZONE 'America/Sao_Paulo' AS DATE));
 
 COMMIT;

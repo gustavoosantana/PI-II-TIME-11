@@ -1,4 +1,5 @@
-const API_BASE_URL = "http://localhost:3000";
+// Vazio = o mesmo servidor que entregou a pagina (funciona local e no Render)
+const API_BASE_URL = "";
 const erro_nome = document.getElementById("erro_nome");
 const erro_desc = document.querySelector("#erro_desc");
 const erro_assoc = document.querySelector("#erro_assoc");

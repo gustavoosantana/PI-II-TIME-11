@@ -1,10 +1,5 @@
 // AUTORIA: GUSTAVO
 
-const usuarioCadastrado = {
-    email: "exemplo@email.com",
-    senha: "123456"
-};
-
 const form = document.getElementById('login-form')
 const CampoEmail = document.getElementById('email')
 const CampoSenha = document.getElementById('senha')
@@ -24,48 +19,45 @@ toggleSenha.addEventListener('click', () => {
     }
 })
 
-form.addEventListener('submit', (e) => {
-    const senha = CampoSenha.value.trim().toLowerCase()
+form.addEventListener('submit', async (e) => {
+    e.preventDefault()
     const email = CampoEmail.value.trim()
-    let isValid = true
+    const senha = CampoSenha.value
 
-    if(email === '') {
+    emailError.textContent = ''
+    senhaError.textContent = ''
+    CampoEmail.classList.remove('error')
+    CampoSenha.classList.remove('error')
+
+    if (email === '') {
         emailError.textContent = 'Insira um email válido'
         CampoEmail.classList.add('error')
-        isValid = false
-    } else if(email !== usuarioCadastrado.email) {
-        emailError.textContent = 'Email Incorreto'
-        CampoEmail.classList.add('error')
-        isValid = false
     }
-    else {
-        emailError.textContent = ''
-        CampoEmail.classList.remove('error')
-        isValid = true
-    }
-
-    if(senha === '') {
+    if (senha === '') {
         senhaError.textContent = 'Informe a senha'
         CampoSenha.classList.add('error')
-        isValid = false
-    } else if(senha !== usuarioCadastrado.senha) {
-        senhaError.textContent = 'Senha incorreta'
-        CampoSenha.classList.add('error')
-        isValid = false
     }
-    else {
-        senhaError.textContent = ''
-        CampoSenha.classList.remove('error')
-        isValid = true
-    }
+    if (email === '' || senha === '') return
 
-    if(!isValid) {
-        e.preventDefault()
-        console.log("Flalhou")
-    } else {
-        e.preventDefault()
+    // Confere e-mail e senha no banco pela rota POST /login
+    try {
+        const resposta = await fetch('/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, senha })
+        })
+        const json = await resposta.json()
+
+        if (!resposta.ok) {
+            senhaError.textContent = json.mensagem || 'Email ou senha incorretos'
+            CampoSenha.classList.add('error')
+            return
+        }
+
+        // Guarda quem entrou, para as outras telas saberem o usuario
+        sessionStorage.setItem('usuario', JSON.stringify(json))
         window.location.href = 'dashboard.html'
-        console.log("Passou")
+    } catch (erro) {
+        senhaError.textContent = 'Servidor indisponível'
     }
 })
- 

@@ -1,4 +1,10 @@
-const API_BASE_URL = "http://localhost:3000";
+// Vazio = o mesmo servidor que entregou a pagina (funciona local e no Render)
+const API_BASE_URL = "";
+
+// Mostra no topo o usuario que entrou pela tela de login
+const usuario = JSON.parse(sessionStorage.getItem("usuario") || "null") || { nome: "Visitante", perfil: "" };
+document.getElementById("usuario_nome").textContent = usuario.nome;
+document.getElementById("usuario_perfil").textContent = usuario.perfil;
 
 // Seleciona as mensagens de erro e os campos do formulário
 const erro_nome = document.getElementById("erro_nome");
@@ -116,11 +122,16 @@ async function formularioDemanda() {
         tipo: document.querySelector('input[name="Tipo"]:checked')?.value,
         prioridade: document.querySelector('input[name="Prioridade"]:checked')?.value,
         id_projeto: projeto.id,
-        data_criacao: "",
-        data_finalizacao: ""
+        data_finalizacao: campo_data.value || null
     };
 
-    await criarDemanda(demanda);
+    const resultado = await criarDemanda(demanda);
+
+    // Cadastrou: avisa e abre a listagem, onde a demanda nova aparece
+    if (resultado) {
+        alert(resultado.mensagem || "Demanda cadastrada!");
+        window.location.href = "listagem.html";
+    }
 }
 
 function mostrarErro(json) {
